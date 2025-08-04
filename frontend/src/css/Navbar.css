@@ -1,0 +1,18 @@
+.nav-links {
+  font-family: "Audiowide", sans-serif;
+  text-decoration: none;
+  font-size: 20px;
+  color: #EDE4F1;
+}
+.profileIcon {
+  width: 10vh; /* or any square size */
+  height: 10vh;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%; /* rounds the square into a circle */
+  overflow: hidden;
+  border: 5px solid #EDE4F1;
+}
+.navContainer {
+    background-color: #171123;
+}
