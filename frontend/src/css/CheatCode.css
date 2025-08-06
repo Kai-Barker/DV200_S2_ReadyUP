@@ -1,0 +1,44 @@
+.cheatcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  color: #ede4f1;
+}
+
+.cheatcode-title {
+  margin-bottom: 1rem;
+  font-size: 18px;
+  text-align: center;
+}
+
+.cheatcode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-template-rows: repeat(3, 60px);
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.cheat-button {
+  width: 60px;
+  height: 60px;
+  background-color: transparent;
+  border: 2px solid #ede4f1;
+  color: #ede4f1;
+  font-size: 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cheat-button:hover {
+  background-color: #ede4f1;
+  color: #171123;
+}
+
+.center-btn {
+  cursor: default;
+  background-color: transparent;
+}

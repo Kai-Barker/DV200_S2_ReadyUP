@@ -29,7 +29,7 @@ const Navbar = () => {
           <Col lg={{span:3,offset:1}} className="d-flex justify-content-end align-items-center gap-4 pe-4">
             <Link className="nav-links cursor-target" to="/">Help</Link>
             <Link to="/"><img src={FriendsIcon} className="cursor-target" style={{ height: "50px" }} /></Link>
-            <Link to="/"><img src={icon} className="profileIcon cursor-target" style={{maxHeight:'80%'}}/></Link>
+            <Link to="/Login"><img src={icon} className="profileIcon cursor-target" style={{maxHeight:'80%'}}/></Link>
           </Col>
         </Row>
       </Container>

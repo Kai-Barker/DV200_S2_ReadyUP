@@ -1,0 +1,37 @@
+.outline-button-container {
+    height: 6.5vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.outline-button-component {
+    height: auto;
+    width: auto;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    border-radius: 15px;
+    border-color: #EDE4F1;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0.3vw;
+    font-size: 20px;
+}
+ @media screen and (max-width: 768px) {
+    .outline-button-container {
+        height: 4vh;
+    }
+    
+ }
+
+.outline-button-component:hover {
+    background-color: #EDE4F1;
+    color: #171123;
+    border-color: #EDE4F1;
+}
+
+.btn-primary {
+    --bs-btn-active-bg: #DDAC7D;
+    --bs-btn-active-color: black;
+    --bs-btn-active-border-color: #DDAC7D;
+}

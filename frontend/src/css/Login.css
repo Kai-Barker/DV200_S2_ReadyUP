@@ -1,0 +1,61 @@
+.login-header {
+  color: #73eedc;
+  font-size: 46px;
+}
+.login-page {
+  font-family: "Audiowide", sans-serif;
+  background-image: url("../assets/images/LoginBG.png");
+  
+  min-height: 100vh;
+  color: #ede4f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login-form-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10vh;
+}
+.login-submit-button{
+    height: auto;
+    width: auto;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    border-radius: 15px;
+    border-color: #EDE4F1;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0.3vw;
+    font-size: 20px;
+    margin-bottom: 5vh;
+}
+.login-submit-button:hover {
+    background-color: #EDE4F1;
+    color: #171123;
+    border-color: #EDE4F1;
+}
+.login-center-component-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.login-form-field{
+    background: none;
+    height: 6vh;
+    border-width: 0.2vw;
+    border-color: #EDE4F1;
+    border-radius: 15px;
+    color: #EDE4F1;
+}
+.login-form-field:focus {
+  background-color: #ede4f1;
+  border-color: #73eedc;
+  box-shadow: none;
+  color: #171123;
+}
+
+.login-form-group{
+    margin-bottom: 5vh;
+}

@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TargetCursor from "./components/TargetCursor.js";
+import Login from './pages/Login.js'
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Router>
     </div>
