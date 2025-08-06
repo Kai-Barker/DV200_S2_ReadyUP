@@ -1,7 +1,7 @@
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 import '../css/Login.css';
 
 const Login = () => {
@@ -10,8 +10,8 @@ const Login = () => {
       <Container style={{ maxWidth: "40vw", backgroundColor:'rgba(237, 228, 241, 0.2)', paddingTop:"2vw", borderRadius:"40px", marginTop:"5vh"}}>
         <Row>
           <Col className="login-form-col">
-            <h1 className="login-header">Login</h1>
-            <LoginForm />
+            <h1 className="login-header">Register</h1>
+            <RegisterForm />
           </Col>
         </Row>
       </Container>

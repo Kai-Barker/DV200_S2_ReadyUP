@@ -36,6 +36,19 @@ const LoginForm = () => {
           />
         </Form.Group>
       </div>
+      <div className="login-form-group">
+        <Form.Group
+          className="mb-3 login-form-group"
+          controlId="formBasicPassword"
+        >
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            className="cursor-target login-form-field"
+            type="password"
+            required
+          />
+        </Form.Group>
+      </div>
       <div className="login-center-component-wrapper">
       <Form.Group className="mb-3" controlId="formBasicCheckbox">
         <h5>Enter Your Cheat Code</h5>
@@ -48,10 +61,10 @@ const LoginForm = () => {
           LETS GO
         </Button>
       </div>
-      <h3>Don't Have A ReadyUP Account?</h3>
+      <h3>Already Have A ReadyUP Account?</h3>
       <div style={{marginBottom:"5vh"}}>
 
-      <OutlineButton buttonLink={"/Register"} buttonLabel={"Register"} />
+      <OutlineButton buttonLink={"/Login"} buttonLabel={"Login"} />
       </div>
     </Form>
   );

@@ -6,6 +6,7 @@ import Home from "./pages/Home.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TargetCursor from "./components/TargetCursor.js";
 import Login from './pages/Login.js'
+import Register from './pages/Register.js'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Router>
     </div>

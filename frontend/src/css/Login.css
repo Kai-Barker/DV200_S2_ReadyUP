@@ -5,7 +5,8 @@
 .login-page {
   font-family: "Audiowide", sans-serif;
   background-image: url("../assets/images/LoginBG.png");
-  
+  background-size: cover;
+  background-repeat: no-repeat;
   min-height: 100vh;
   color: #ede4f1;
   display: flex;
@@ -17,7 +18,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10vh;
+  gap: 5vh;
 }
 .login-submit-button{
     height: auto;

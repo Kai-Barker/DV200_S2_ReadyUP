@@ -1,25 +1,26 @@
+import { Container, Row, Col} from 'react-bootstrap';
 import '../css/CheatCode.css';
+import UpArrow from '../assets/images/UpArrow.svg'
+import LeftArrow from '../assets/images/LeftArrow.svg'
+import RightArrow from '../assets/images/RightArrow.svg'
+import DownArrow from '../assets/images/DownArrow.svg'
+import CentreDpad from '../assets/images/CenterDPAD.svg'
 
-const CheatCode = ({ onInput }) => {
-  const handleClick = (direction) => {
-    onInput(direction); // Call parent function with the direction
-  };
-
+const CheatCode = () => {
   return (
     <div className="cheatcode-container">
-      <h5 className="cheatcode-title">Enter Your Cheat Code</h5>
-      <div className="cheatcode-grid">
-        <button className="cheat-button" onClick={() => handleClick("up")}>↑</button>
+      <div className="dpad-grid">
         <div></div>
+        <div className="cursor-target dpad-button up-arrow"><img src={UpArrow} /></div>
         <div></div>
 
-        <button className="cheat-button" onClick={() => handleClick("left")}>←</button>
-        <button className="cheat-button center-btn" disabled>●</button>
-        <button className="cheat-button" onClick={() => handleClick("right")}>→</button>
+        <div className="cursor-target dpad-button left-arrow"><img src={LeftArrow} /></div>
+        <div className="dpad-button centre-dot"><img src={CentreDpad} /></div>
+        <div className="cursor-target dpad-button right-arrow"><img src={RightArrow} /></div>
 
         <div></div>
+        <div className="cursor-target dpad-button down-arrow"><img src={DownArrow} /></div>
         <div></div>
-        <button className="cheat-button" onClick={() => handleClick("down")}>↓</button>
       </div>
     </div>
   );
