@@ -19,17 +19,17 @@ const Navbar = () => {
 
           {/* Nav Links */}
           <Col lg={{span:5, offset:1}} className="d-flex justify-content-center gap-5">
-            <Link className="nav-links" to="/">Home</Link>
-            <Link className="nav-links" to="/">Browse Posts</Link>
-            <Link className="nav-links" to="/">My Posts</Link>
-            <Link className="nav-links" to="/">Categories</Link>
+            <Link className="nav-links cursor-target" to="/">Home</Link>
+            <Link className="nav-links cursor-target" to="/">Browse Posts</Link>
+            <Link className="nav-links cursor-target" to="/">My Posts</Link>
+            <Link className="nav-links cursor-target" to="/">Categories</Link>
           </Col>
 
           {/* Icons */}
           <Col lg={{span:3,offset:1}} className="d-flex justify-content-end align-items-center gap-4 pe-4">
-            <Link className="nav-links" to="/">Help</Link>
-            <Link to="/"><img src={FriendsIcon} style={{ height: "50px" }} /></Link>
-            <Link to="/"><img src={icon} className="profileIcon" style={{maxHeight:'80%'}}/></Link>
+            <Link className="nav-links cursor-target" to="/">Help</Link>
+            <Link to="/"><img src={FriendsIcon} className="cursor-target" style={{ height: "50px" }} /></Link>
+            <Link to="/"><img src={icon} className="profileIcon cursor-target" style={{maxHeight:'80%'}}/></Link>
           </Col>
         </Row>
       </Container>
