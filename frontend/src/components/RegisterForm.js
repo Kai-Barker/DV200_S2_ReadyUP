@@ -15,6 +15,18 @@ const LoginForm = () => {
           className="mb-3 login-form-group"
           controlId="formBasicEmail"
         >
+          <Form.Label>Username:</Form.Label>
+          <Form.Control
+            className="cursor-target login-form-field"
+            required
+          />
+        </Form.Group>
+      </div>
+      <div className="login-form-group">
+        <Form.Group
+          className="mb-3 login-form-group"
+          controlId="formBasicEmail"
+        >
           <Form.Label>Email:</Form.Label>
           <Form.Control
             className="cursor-target login-form-field"
