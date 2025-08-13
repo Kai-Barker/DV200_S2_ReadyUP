@@ -10,7 +10,7 @@ import Register from './pages/Register.js'
 
 function App() {
   return (
-    <div className="">
+    <div className="App_bg">
       <TargetCursor 
         spinDuration={4}
         hideDefaultCursor={true}

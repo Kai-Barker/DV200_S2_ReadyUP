@@ -1,0 +1,48 @@
+body {
+  font-family: "Audiowide", sans-serif;
+}
+
+.game-cat-card {
+  border: 0.2vw solid #ede4f1;
+  border-radius: 15px;
+  color: #ede4f1;
+  text-align: left;
+  overflow: hidden; /* makes sure the image respects rounded corners */
+  padding: 0; /* remove global padding */
+}
+
+.game-cat-card img {
+  width: 100%;
+  height: auto;
+}
+
+.game-cat-card-title {
+  font-size: 34px;
+  color: #73eedc;
+  font-weight: bold;
+  margin: 0.5rem;
+}
+
+.game-cat-card-posts {
+  font-size: 16px;
+  margin: 0.5rem;
+  color: #DDFFF7;
+}
+
+.view-now {
+  margin-top: 1rem;
+  margin-right: 1rem;
+  text-align: end;
+  font-size: 28px;
+  color: #DDFFF7;
+  cursor: pointer;
+  width: fit-content;
+  margin-left: auto;
+}
+.view-text{
+    text-decoration: underline;
+}
+
+.view-arrow {
+  margin-left: 1rem;
+}
