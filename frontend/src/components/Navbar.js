@@ -20,7 +20,7 @@ const Navbar = () => {
           {/* Nav Links */}
           <Col lg={{span:5, offset:1}} className="d-flex justify-content-center gap-5">
             <Link className="nav-links cursor-target" to="/">Home</Link>
-            <Link className="nav-links cursor-target" to="/">Browse Posts</Link>
+            <Link className="nav-links cursor-target" to="/categories">Browse Posts</Link>
             <Link className="nav-links cursor-target" to="/">My Posts</Link>
             <Link className="nav-links cursor-target" to="/">Categories</Link>
           </Col>

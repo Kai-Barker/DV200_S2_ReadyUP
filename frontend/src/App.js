@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TargetCursor from "./components/TargetCursor.js";
 import Login from './pages/Login.js'
 import Register from './pages/Register.js'
+import CategoriesPage from "./pages/CategoriesPage.js";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/categories" element={<CategoriesPage />} />
         </Routes>
       </Router>
     </div>

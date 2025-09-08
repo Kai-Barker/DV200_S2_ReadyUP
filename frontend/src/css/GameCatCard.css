@@ -17,16 +17,19 @@ body {
 }
 
 .game-cat-card-title {
-  font-size: 34px;
   color: #73eedc;
   font-weight: bold;
   margin: 0.5rem;
+  white-space: nowrap; /* force one line */
+  overflow: hidden; /* hide overflow */
+  text-overflow: ellipsis; /* "..." if too long */
+  font-size: clamp(0.8rem, 2vw, 1.5rem); /* responsive sizing */
 }
 
 .game-cat-card-posts {
   font-size: 16px;
   margin: 0.5rem;
-  color: #DDFFF7;
+  color: #ddfff7;
 }
 
 .view-now {
@@ -34,13 +37,13 @@ body {
   margin-right: 1rem;
   text-align: end;
   font-size: 28px;
-  color: #DDFFF7;
+  color: #ddfff7;
   cursor: pointer;
   width: fit-content;
   margin-left: auto;
 }
-.view-text{
-    text-decoration: underline;
+.view-text {
+  text-decoration: underline;
 }
 
 .view-arrow {

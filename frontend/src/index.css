@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Audiowide', sans-serif;
+  font-family: 'Audiowide', sans-serif !important;
 }
 .audiowide-regular {
   font-family: "Audiowide", sans-serif;
@@ -8,8 +8,8 @@ body {
   font-style: normal;
 }
 
-
+/* 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+} */

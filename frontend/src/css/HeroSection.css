@@ -1,0 +1,60 @@
+.hero-section {
+  height: 80vh;
+  width: 100%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../assets/images/OW2HeroSectionIMG.png");
+  background-size: cover;
+  background-position: center;
+}
+.hero-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero-heading-one {
+  font-size: 4rem;
+  color: #ede4f1;
+  margin-left: 2vw;
+  padding: 0;
+}
+.hero-heading-two {
+  font-size: 2rem;
+  color: #ede4f1;
+  margin-left: 20vw;
+  margin-top: 1vh;
+}
+
+.hero-button {
+  border: 2px solid #ddfff7;
+  color: #171123;
+  -webkit-text-stroke: 0.5px;
+  -webkit-text-stroke-color: #ddfff7;
+  position: relative;
+  font-size: 3.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10vh;
+  width: calc(30% + 5vw);
+  height: auto;
+  transition: transform 0.2s ease;
+  clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+  background-image: linear-gradient(
+      rgba(218, 239, 179, 0.7),
+      rgba(218, 239, 179, 0.7)
+    ),
+    url("../assets/images/HeroBTN_BG.png");
+  background-size: 130%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-button:hover {
+  transform: scale(1.05);
+}
+.hero-link {
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
