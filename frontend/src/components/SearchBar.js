@@ -10,6 +10,7 @@ const SearchBar = () => {
           <TextField
             fullWidth
             id="outlined-multiline-flexible"
+            className="cursor-target"
             label="Search"
             multiline
             maxRows={4}

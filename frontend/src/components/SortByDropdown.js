@@ -15,7 +15,7 @@ const SortByDropdown = () => {
 
   return (
     <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
+      <FormControl fullWidth className="cursor-target">
         <InputLabel
           id="demo-simple-select-label"
           sx={{
