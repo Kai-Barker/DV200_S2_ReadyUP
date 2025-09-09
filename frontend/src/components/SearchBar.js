@@ -26,8 +26,8 @@ const SearchBar = () => {
               "& .MuiInputLabel-root.Mui-focused": { color: "#EDE4F1" },
               "& .MuiOutlinedInput-root": {
                 borderRadius: "40px",
-                "& fieldset": { borderColor: "#EDE4F1" },
-                "&:hover fieldset": { borderColor: "#EDE4F1" },
+                "& fieldset": { borderColor: "#EDE4F1", borderWidth: '2px' },
+                "&:hover fieldset": { borderColor: "#EDE4F1", borderWidth: '3px' },
                 "&.Mui-focused fieldset": { borderColor: "#EDE4F1" },
               },
             }}

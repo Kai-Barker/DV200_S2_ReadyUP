@@ -8,6 +8,7 @@ import TargetCursor from "./components/TargetCursor.js";
 import Login from './pages/Login.js'
 import Register from './pages/Register.js'
 import CategoriesPage from "./pages/CategoriesPage.js";
+import BrowsePostsPage from "./pages/BrowsePostsPage.js";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/browse-posts/:gameTitle" element={<BrowsePostsPage />} />
         </Routes>
       </Router>
     </div>

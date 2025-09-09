@@ -1,12 +1,10 @@
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
-import { useState } from "react";
 import LeftArrow from "../assets/images/_.svg";
 import RightArrow from "../assets/images/_1.svg";
 
 export default function VariantButtonGroup({ totalPages, currentPage, onPageChange }) {
-  const [page, setPage] = useState(currentPage);
   return (
     <Box
       sx={{

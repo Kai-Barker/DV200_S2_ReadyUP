@@ -13,8 +13,11 @@ const Navbar = () => {
       <Container fluid>
         <Row className="align-items-center">
           {/* Logo */}
+          
           <Col lg={2}>
-            <img src={Logo} style={{ maxWidth: "60%" }} />
+            <Link to="/">
+              <img src={Logo} style={{ maxWidth: "60%" }} className="cursor-target" />
+            </Link>
           </Col>
 
           {/* Nav Links */}
