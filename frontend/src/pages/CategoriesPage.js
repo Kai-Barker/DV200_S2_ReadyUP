@@ -4,6 +4,8 @@ import SearchBar from "../components/SearchBar";
 import SortByDropdown from "../components/SortByDropdown";
 import GameCatCard from "../components/GameCatCard";
 import dummyImg from "../assets/images/FN PlaceHolder.png";
+import PaginationControls from "../components/PaginationControls";
+import { useState, useEffect } from "react";
 
 const dummyData = [
   {
@@ -46,9 +48,31 @@ const dummyData = [
     title: "Rocket League",
     numPosts: 45,
   },
+  {
+    image: dummyImg,
+    title: "Paladins",
+    numPosts: 45,
+  },
 ];
 
 const CategoriesPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageIndex, setPageIndex] = useState(0);
+  const categoriesPerPage = 8;
+
+  const totalPages = Math.ceil(dummyData.length / categoriesPerPage);
+
+  useEffect(() => {
+    setPageIndex((currentPage - 1) * categoriesPerPage);
+  }, [currentPage]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      // Fetch new data based on newPage
+    }
+  }
+  const currentCategories = dummyData.slice(pageIndex, pageIndex + categoriesPerPage);
   return (
     <div className="categories-page">
       <Container fluid className="px-5 py-4">
@@ -64,7 +88,7 @@ const CategoriesPage = () => {
           </Col>
         </Row>
         <Row className="gx-5 gy-5 my-1">
-          {dummyData.map((game, index) => (
+          {currentCategories.map((game, index) => (
             <Col key={index} md={3}>
               <GameCatCard
                 image={game.image}
@@ -73,6 +97,9 @@ const CategoriesPage = () => {
               />
             </Col>
           ))}
+        </Row>
+        <Row className="my-4" style={{ justifyContent: "center" }}>
+          <PaginationControls currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
         </Row>
       </Container>
     </div>
