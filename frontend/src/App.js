@@ -9,6 +9,7 @@ import Login from './pages/Login.js'
 import Register from './pages/Register.js'
 import CategoriesPage from "./pages/CategoriesPage.js";
 import BrowsePostsPage from "./pages/BrowsePostsPage.js";
+import Footer from "./components/Footer.js"
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/browse-posts/:gameTitle" element={<BrowsePostsPage />} />
         </Routes>
+        <Footer />
       </Router>
     </div>
   );

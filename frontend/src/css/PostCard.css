@@ -1,0 +1,10 @@
+.cardBorder{
+    border: 4px solid #EDE4F1;
+    border-radius: 20px;
+}
+
+.post-card-align-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
