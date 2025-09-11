@@ -17,3 +17,9 @@
 .navContainer {
   background-color: #171123;
 }
+
+.nav-links.active{
+  color: #73EEDC;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+}

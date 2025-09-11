@@ -1,0 +1,13 @@
+.profile-username{
+    font-size:3.5rem;
+    color: #73EEDC;
+}
+.profile-username-spacing{
+    height: 15vh;
+}
+
+.profile-comms-heading{
+    margin-top: 1vh;
+    font-size: 1.5rem;
+    color: #EDE4F1;
+}

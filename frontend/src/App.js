@@ -9,7 +9,8 @@ import Login from './pages/Login.js'
 import Register from './pages/Register.js'
 import CategoriesPage from "./pages/CategoriesPage.js";
 import BrowsePostsPage from "./pages/BrowsePostsPage.js";
-import Footer from "./components/Footer.js"
+import Footer from "./components/Footer.js";
+import Profile from './pages/UserProfile.js';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/browse-posts/:gameTitle" element={<BrowsePostsPage />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />
       </Router>
