@@ -7,7 +7,7 @@ import '../css/Login.css';
 const Login = () => {
   return (
     <div className="login-page">
-      <Container style={{ maxWidth: "40vw", backgroundColor:'rgba(237, 228, 241, 0.2)', paddingTop:"2vw", borderRadius:"40px", marginTop:"5vh"}}>
+      <Container style={{ maxWidth: "40vw", backgroundColor:'rgba(237, 228, 241, 0.2)', paddingTop:"2vw", borderRadius:"40px", marginTop:"5vh", marginBottom:"5vh" }}>
         <Row>
           <Col className="login-form-col">
             <h1 className="login-header">Login</h1>

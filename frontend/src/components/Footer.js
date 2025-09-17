@@ -13,7 +13,7 @@ import {
 
 const Footer = () => {
   return (
-    <div style={{ marginTop: "10vh", backgroundColor: "#202D46", paddingBottom:'5vh' }}>
+    <div style={{ paddingTop: "5vh", backgroundColor: "#202D46", paddingBottom:'5vh' }}>
       <Container fluid>
         <Row className="px-4" style={{ paddingTop: "5vh" }}>
           <Col lg={{ span: 3, offset:0 }} style={{display:'flex', justifyContent:'center', alignItems:'center'}}>

@@ -9,6 +9,7 @@ import Login from './pages/Login.js'
 import Register from './pages/Register.js'
 import CategoriesPage from "./pages/CategoriesPage.js";
 import BrowsePostsPage from "./pages/BrowsePostsPage.js";
+import AdminPage from "./pages/Admin.js";
 import Footer from "./components/Footer.js";
 import Profile from './pages/UserProfile.js';
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/browse-posts/:gameTitle" element={<BrowsePostsPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
         <Footer />
       </Router>
