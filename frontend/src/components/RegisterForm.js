@@ -3,80 +3,84 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import CheatCode from "./CheatCode";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const LoginForm = () => {
-    const handleCheatInput = (direction) => {
-  console.log("Cheat code input:", direction);
-};
+  const handleCheatInput = (direction) => {
+    setCheatCode(cheatCode + direction);
+    console.log(cheatCode);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password != confirmPassword) {
+      console.error("Passwords do not match");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:5000/api/auth/register", {
+        username,
+        email,
+        password,
+        cheatCode,
+      });
+      console.log(response.data);
+      console.log("Registration successful");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [cheatCode, setCheatCode] = useState("");
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <div className="login-form-group">
-        <Form.Group
-          className="mb-3 login-form-group"
-          controlId="formBasicEmail"
-        >
+        <Form.Group className="mb-3 login-form-group" controlId="formBasicEmail">
           <Form.Label>Username:</Form.Label>
-          <Form.Control
-            className="cursor-target login-form-field"
-            required
-          />
+          <Form.Control className="cursor-target login-form-field" required value={username} onChange={(e) => setUsername(e.target.value)} />
         </Form.Group>
       </div>
       <div className="login-form-group">
-        <Form.Group
-          className="mb-3 login-form-group"
-          controlId="formBasicEmail"
-        >
+        <Form.Group className="mb-3 login-form-group" controlId="formBasicEmail">
           <Form.Label>Email:</Form.Label>
-          <Form.Control
-            className="cursor-target login-form-field"
-            type="email"
-            required
-          />
+          <Form.Control className="cursor-target login-form-field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </Form.Group>
       </div>
       <div className="login-form-group">
-        <Form.Group
-          className="mb-3 login-form-group"
-          controlId="formBasicPassword"
-        >
+        <Form.Group className="mb-3 login-form-group" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control
-            className="cursor-target login-form-field"
-            type="password"
-            required
-          />
+          <Form.Control className="cursor-target login-form-field" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         </Form.Group>
       </div>
       <div className="login-form-group">
-        <Form.Group
-          className="mb-3 login-form-group"
-          controlId="formBasicPassword"
-        >
+        <Form.Group className="mb-3 login-form-group" controlId="formBasicPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             className="cursor-target login-form-field"
             type="password"
             required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Form.Group>
       </div>
       <div className="login-center-component-wrapper">
-      <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <h5>Enter Your Cheat Code</h5>
-        <CheatCode onInput={handleCheatInput}/>
-      </Form.Group>
-
+        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+          <h5>Enter Your Cheat Code</h5>
+          <CheatCode onInput={handleCheatInput} />
+        </Form.Group>
       </div>
-      <div className="login-center-component-wrapper" style={{marginTop:"3vh"}}>
+      <div className="login-center-component-wrapper" style={{ marginTop: "3vh" }}>
         <Button className="cursor-target login-submit-button" type="submit">
           LETS GO
         </Button>
       </div>
       <h3>Already Have A ReadyUP Account?</h3>
-      <div style={{marginBottom:"5vh"}}>
-
-      <OutlineButton buttonLink={"/Login"} buttonLabel={"Login"} />
+      <div style={{ marginBottom: "5vh" }}>
+        <OutlineButton buttonLink={"/Login"} buttonLabel={"Login"} />
       </div>
     </Form>
   );
