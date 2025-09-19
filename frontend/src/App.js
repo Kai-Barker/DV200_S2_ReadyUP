@@ -12,6 +12,7 @@ import BrowsePostsPage from "./pages/BrowsePostsPage.js";
 import AdminPage from "./pages/Admin.js";
 import Footer from "./components/Footer.js";
 import Profile from './pages/UserProfile.js';
+import TestPage from "./pages/TestPage.js";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/browse-posts/:gameTitle" element={<BrowsePostsPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/myposts" element={<TestPage />} />
         </Routes>
         <Footer />
       </Router>
