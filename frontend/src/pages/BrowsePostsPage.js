@@ -7,6 +7,7 @@ import PostCard from "../components/PostCard";
 import profilePic from "../assets/images/towelahri.jpg";
 import PaginationControls from "../components/PaginationControls";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const dummyData = [
   {
@@ -92,6 +93,19 @@ const BrowsePostsPage = () => {
   useEffect(() => {
     setPageIndex((currentPage - 1) * postsPerPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/lfg/${title}/posts`);
+        const data = await response.data;
+        console.log(data);
+      } catch (error) {
+        
+      }
+    };
+    fetchPosts();
+  }, [title]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {

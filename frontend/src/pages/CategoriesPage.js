@@ -6,65 +6,86 @@ import GameCatCard from "../components/GameCatCard";
 import dummyImg from "../assets/images/FN PlaceHolder.png";
 import PaginationControls from "../components/PaginationControls";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
-const dummyData = [
-  {
-    image: dummyImg,
-    title: "Fortnite",
-    numPosts: 73,
-  },
-  {
-    image: dummyImg,
-    title: "League of Legends",
-    numPosts: 120,
-  },
-  {
-    image: dummyImg,
-    title: "Valorant",
-    numPosts: 95,
-  },
-  {
-    image: dummyImg,
-    title: "Minecraft",
-    numPosts: 250,
-  },
-  {
-    image: dummyImg,
-    title: "Apex Legends",
-    numPosts: 80,
-  },
-  {
-    image: dummyImg,
-    title: "CS:GO",
-    numPosts: 150,
-  },
-  {
-    image: dummyImg,
-    title: "Overwatch",
-    numPosts: 60,
-  },
-  {
-    image: dummyImg,
-    title: "Rocket League",
-    numPosts: 45,
-  },
-  {
-    image: dummyImg,
-    title: "Paladins",
-    numPosts: 45,
-  },
-];
+// const categories = [
+//   {
+//     image: dummyImg,
+//     title: "Fortnite",
+//     numPosts: 73,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "League of Legends",
+//     numPosts: 120,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "Valorant",
+//     numPosts: 95,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "Minecraft",
+//     numPosts: 250,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "Apex Legends",
+//     numPosts: 80,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "CS:GO",
+//     numPosts: 150,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "Overwatch",
+//     numPosts: 60,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "Rocket League",
+//     numPosts: 45,
+//   },
+//   {
+//     image: dummyImg,
+//     title: "Paladins",
+//     numPosts: 45,
+//   },
+// ];
 
 const CategoriesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageIndex, setPageIndex] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
   const categoriesPerPage = 8;
 
-  const totalPages = Math.ceil(dummyData.length / categoriesPerPage);
+  const totalPages = categories ? Math.ceil(categories.length / categoriesPerPage) : 0;
 
   useEffect(() => {
     setPageIndex((currentPage - 1) * categoriesPerPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    const fetchCategories = async() => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/lfg');
+        const data = await response.data;
+        setCategories(data);
+        console.log(data);
+        
+        setIsLoading(false);
+      } catch (error) {
+        setError('Error fetching categories');
+        setIsLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -72,7 +93,7 @@ const CategoriesPage = () => {
       // Fetch new data based on newPage
     }
   }
-  const currentCategories = dummyData.slice(pageIndex, pageIndex + categoriesPerPage);
+  const currentCategories = categories ? categories.slice(pageIndex, pageIndex + categoriesPerPage) : [];
   return (
     <div className="categories-page">
       <Container fluid className="px-5 py-4">
@@ -91,9 +112,10 @@ const CategoriesPage = () => {
           {currentCategories.map((game, index) => (
             <Col key={index} md={3}>
               <GameCatCard
-                image={game.image}
+                image={game.category_picture}
                 title={game.title}
-                numPosts={game.numPosts}
+                numPosts={game.num_posts}
+                categoryID={game.category_id}
               />
             </Col>
           ))}

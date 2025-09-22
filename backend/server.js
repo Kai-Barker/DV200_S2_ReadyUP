@@ -4,6 +4,7 @@ const mysql = require("mysql2");
 const cloudinary = require('cloudinary').v2;
 const createAuthRoutes = require("./router/AuthRoutes");
 const createUserRoutes = require("./router/UserRoutes");
+const createLFGRoutes = require ("./router/LFGRoutes");
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -43,6 +44,9 @@ app.use("/api/auth", authRoutes);
 
 const userRoutes = createUserRoutes(db, cloudinary);
 app.use("/api/user", userRoutes);
+
+const lfgRoutes = createLFGRoutes(db, cloudinary);
+app.use("/api/lfg", lfgRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
