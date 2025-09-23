@@ -3,7 +3,7 @@ import "../css/ImageUploader.css";
 import { useState } from "react";
 import axios from "axios";
 
-const userID = "1"; // Placeholder userID for now until i get JWT going
+const userID = "7"; // Placeholder userID for now until i get JWT going
 
 const FileUploader = ({ buttonLabel }) => {
   const [selectedFile, setSelectedFile] = useState(null);

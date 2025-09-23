@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import CheatCode from "./CheatCode";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
 
 const LoginForm = () => {
   const handleCheatInput = (direction) => {
@@ -14,13 +14,14 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await api.post("/auth/login", {
         email,
         password,
         cheatCode,
       });
       console.log(response.data);
       console.log("Login successful");
+      localStorage.setItem("token", response.data.token);
     } catch (error) {
       console.error(error);
     }

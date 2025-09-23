@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 const saltRounds = 10;
@@ -15,15 +16,18 @@ module.exports = function (db) {
       if (err) return res.status(500).send(err);
       if (results.length === 0) return res.status(401).send({ message: "User not found or Invalid Credentials" });
       const user = results[0];
+      console.log(results[0]);
+      
       try {
         const isPasswordValid = await bcrypt.compare(password, user.hashed_password);
         const isCheatCodeValid = await bcrypt.compare(cheatCode, user.hashed_code);
         if (!isPasswordValid || !isCheatCodeValid) {
           return res.status(401).send({ message: "User not found or Invalid Credentials" });
         }
-        res.send({
+        const token = jwt.sign({id: user.user_id , email: user.email, role: user.role}, process.env.JWT_SECRET, {expiresIn: '2h'});
+        res.status(200).send({
           message: "Login successful",
-          user: { id: user.id, username: user.username, email: user.email },
+          token: "Bearer " + token,
         });
       } catch (error) {
         console.error("Error during login:", error);

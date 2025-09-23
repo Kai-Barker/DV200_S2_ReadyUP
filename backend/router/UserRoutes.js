@@ -1,13 +1,14 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 module.exports = function (db, cloudinary) {
-  router.post("/:userID/upload_pfp", upload.single("pfp"), async (req, res) => {
-    const userID = req.params.userID;
+  router.post("/upload_pfp", authMiddleware , upload.single("pfp"), async (req, res) => {
+    const userID = req.user.userID;
     if (!req.file) {
       return res.status(400).send("No file uploaded");
     }
@@ -40,5 +41,29 @@ module.exports = function (db, cloudinary) {
   router.post("/:userID/update_profile", (req,res) => {
     
   })
-    return router;
+  router.get("/profile", authMiddleware, (req,res) => {
+    console.log(req);
+    
+    const userID = req.user.id;
+    console.log("Running profile fetch");
+    console.log(userID);
+    
+    const sql = "SELECT * from users WHERE users.user_id = ?";
+    db.query(sql, [userID], (err, results) => {
+      if (err){
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error fetching user profile" });
+      }
+      if (results.length === 0) {
+        console.log(`Unable to find user with ID ${userID}`);
+
+        return res.status(404).json({ message: `User not found with ID ${userID}` });
+      }
+      res.status(200).json({
+        data: results[0],
+        message: "User profile fetched successfully."
+      });
+    })
+  });
+  return router;
 };

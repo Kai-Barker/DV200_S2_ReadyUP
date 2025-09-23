@@ -5,6 +5,9 @@ import EditProfileBTN from "../components/OutlineButton";
 import OutlineButton from "../components/OutlineButtonLG";
 import Tabs from "../components/Tabs";
 import { Discord, Steam } from 'react-bootstrap-icons';
+import api from "../api";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const dummyUser = {
   profilePic: userPFP,
@@ -31,7 +34,11 @@ let tabsData = [
 ]
 
 const UserProfile = () => {
-    const getSocialIcon = (platform) => {
+
+  const [profileData, setProfileData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getSocialIcon = (platform) => {
   switch (platform) {
     case 'Discord':
       return <Discord className='cursor-target' style={{ marginRight: '3vw', fontSize:'10vh', color: '#73EEDC' }} />;
@@ -41,6 +48,19 @@ const UserProfile = () => {
       return <Discord style={{ marginRight: '10px' }} />;
   }
 };
+  useEffect(()=>{
+    const fetchProfileData = async () => {
+      try {
+        const response = await api.get("/user/profile");
+        setProfileData(response.data);
+        console.log(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    }
+    fetchProfileData();
+  }, [])
   return (
     <div style={{ height: "80vh" }}>
       <Container fluid className="px-5 py-5">
