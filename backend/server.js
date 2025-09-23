@@ -39,6 +39,7 @@ db.connect((err) => {
   console.log("Connected to MySQL database");
 });
 
+//Linking routes to server
 const authRoutes = createAuthRoutes(db);
 app.use("/api/auth", authRoutes);
 

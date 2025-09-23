@@ -18,7 +18,7 @@ module.exports = function (db, cloudinary) {
     })
     router.get('/:title/posts', (req,res) => {
         const title = req.params.title;
-        const sql = "SELECT posts.* FROM posts LEFT JOIN category ON category.category_id = posts.category_id  WHERE category.title = ?";
+        const sql = "SELECT posts.*, users.profile_picture FROM posts LEFT JOIN category ON category.category_id = posts.category_id LEFT JOIN users ON posts.user_id = users.user_id  WHERE category.title = ?";
         db.query(sql, [title], (err, results) => {
             if (err) {
                 console.error("Error fetching posts for category: ",err);

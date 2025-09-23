@@ -11,8 +11,8 @@ import axios from "axios";
 
 const dummyData = [
   {
-    profilePic: profilePic,
-    startDate: "06-15",
+    profile_picture: profilePic,
+    start_time: "06-15",
     usersNeeded: 1,
     usersJoined: 0,
     title: "Casual Duos - Just Vibin'",
@@ -21,8 +21,8 @@ const dummyData = [
     tags: ["Mic Required", "18+", "Duos", "ZeroBuild"],
   },
   {
-    profilePic: profilePic,
-    startDate: "06-18",
+    profile_picture: profilePic,
+    start_time: "06-18",
     usersNeeded: 2,
     usersJoined: 1,
     title: "Looking for Squad - Ranked Push",
@@ -31,8 +31,8 @@ const dummyData = [
     tags: ["Mic Required", "18+", "Squads", "Ranked"],
   },
   {
-    profilePic: profilePic,
-    startDate: "06-20",
+    profile_picture: profilePic,
+    start_time: "06-20",
     usersNeeded: 3,
     usersJoined: 0,
     title: "Zero Build Fun - All Welcome",
@@ -41,8 +41,8 @@ const dummyData = [
     tags: ["ZeroBuild", "Casual", "All Welcome"],
   },
   {
-    profilePic: profilePic,
-    startDate: "06-22",
+    profile_picture: profilePic,
+    start_time: "06-22",
     usersNeeded: 1,
     usersJoined: 2,
     title: "Late Night Duos",
@@ -51,8 +51,8 @@ const dummyData = [
     tags: ["Duos", "LateNight", "21+"],
   },
   {
-    profilePic: profilePic,
-    startDate: "06-25",
+    profile_picture: profilePic,
+    start_time: "06-25",
     usersNeeded: 2,
     usersJoined: 1,
     title: "Competitive Trio Needed",
@@ -61,8 +61,8 @@ const dummyData = [
     tags: ["Trio", "Competitive", "Tournaments"],
   },
   {
-    profilePic: profilePic,
-    startDate: "06-27",
+    profile_picture: profilePic,
+    start_time: "06-27",
     usersNeeded: 4,
     usersJoined: 0,
     title: "Beginner Friendly Lobby",
@@ -71,8 +71,8 @@ const dummyData = [
     tags: ["Beginner", "All Ages", "Learning"],
   },
   {
-    profilePic: profilePic,
-    startDate: "06-30",
+    profile_picture: profilePic,
+    start_time: "06-30",
     usersNeeded: 1,
     usersJoined: 3,
     title: "Mic Only - Fast Games",
@@ -86,9 +86,12 @@ const BrowsePostsPage = () => {
   const title = useParams().gameTitle;
   const [currentPage, setCurrentPage] = useState(1);
   const [pageIndex, setPageIndex] = useState(0);
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
   const postsPerPage = 4;
 
-  const totalPages = Math.ceil(dummyData.length / postsPerPage);
+  const totalPages = Math.ceil(posts.length / postsPerPage);
 
   useEffect(() => {
     setPageIndex((currentPage - 1) * postsPerPage);
@@ -100,8 +103,11 @@ const BrowsePostsPage = () => {
         const response = await axios.get(`http://localhost:5000/api/lfg/${title}/posts`);
         const data = await response.data;
         console.log(data);
+        setPosts(data);
+        setIsLoading(false);
       } catch (error) {
-        
+        setError('Error fetching posts');
+        setIsLoading(false);
       }
     };
     fetchPosts();
@@ -113,7 +119,7 @@ const BrowsePostsPage = () => {
       // Fetch new data based on newPage
     }
   };
-  const currentPosts = dummyData.slice(pageIndex, pageIndex + postsPerPage);
+  const currentPosts = posts.slice(pageIndex, pageIndex + postsPerPage);
   return (
     <Container className="browse-posts-container p-5" fluid>
       <Row>
@@ -137,10 +143,10 @@ const BrowsePostsPage = () => {
             <Row key={index}>
               <Col className="my-3">
                 <PostCard
-                profilePic={post.profilePic}
-                startDate={post.startDate}
-                usersNeeded={post.usersNeeded}
-                usersJoined={post.usersJoined}
+                profilePic={post.profile_picture || profilePic}
+                startDate={post.start_time}
+                usersNeeded={post.max_players - post.num_joined}
+                usersJoined={post.num_joined}
                 title={post.title}
                 description={post.description}
                 tags={post.tags}

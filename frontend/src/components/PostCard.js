@@ -1,11 +1,25 @@
 import { Container, Row, Col } from "react-bootstrap";
-
 import "../css/PostCard.css";
 import Tag from "../components/Tag";
 
-
+import { format, isToday, isPast, formatDistanceToNowStrict, parseISO } from "date-fns"; 
 
 const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, description, tags}) => {
+  let startDateOrTime = parseISO(startDate);
+  const formatDateTime = (dateTime) => {
+    if (isToday(dateTime)) {
+      if (isPast(dateTime)) {
+        return `NOW`;
+      }
+      return `IN \n ${formatDistanceToNowStrict(dateTime).toUpperCase()}`; //This returns the exact time to the event if its in the future, the alternative formatDistanceToNow would be cooler if it was more specific for time over 2 hours ( stupid thing says 2H-24H? )
+    }
+    else {
+      return format(dateTime, "dd/MM");
+    }
+  }
+  startDate = formatDateTime(startDateOrTime);
+  
+  
   return (
     <Container className="cardBorder" style={{color:"#EDE4F1"}}>
       <Row>
@@ -28,6 +42,7 @@ const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, descr
                     objectFit: "cover",
                     borderRadius: "50%",
                     border: "5px solid #EDE4F1",
+                    aspectRatio: "1 / 1",
                   }}
                 />
               </div>

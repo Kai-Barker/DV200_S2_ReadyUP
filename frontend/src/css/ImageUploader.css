@@ -1,12 +1,13 @@
-.outline-button-container {
+.outline-button-container-uploader {
     height: 25vh;
+    width: 100%;
     aspect-ratio: 1/1;
     align-items: center;
     justify-content: center;
     display: flex;
 }
 
-.outline-button-component {
+.outline-button-component-uploader {
     height:20vh;
     aspect-ratio: 1/1;
     padding-left: 2vw;

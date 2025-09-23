@@ -33,9 +33,9 @@ const FileUploader = ({ buttonLabel }) => {
     }
   };
   return (
-    <div className="outline-button-container">
+    <div className="outline-button-container-uploader">
       <input type="file" id="file-input" style={{ display: "none" }} onChange={handleFileChange} accept="image/*" />
-      <label htmlFor="file-input" className="outline-button-component  cursor-target">
+      <label htmlFor="file-input" className="outline-button-component-uploader  cursor-target">
         <span>{buttonLabel}</span>
       </label>
 
