@@ -8,6 +8,7 @@ import profilePic from "../assets/images/towelahri.jpg";
 import PaginationControls from "../components/PaginationControls";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import CreatePost from "../components/CreatePost";
 
 const dummyData = [
   {
@@ -160,6 +161,7 @@ const BrowsePostsPage = () => {
           <PaginationControls currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
         </Col>
       </Row>
+      <CreatePost />
     </Container>
   );
 };

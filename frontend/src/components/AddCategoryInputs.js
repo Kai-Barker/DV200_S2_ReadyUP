@@ -8,30 +8,36 @@ import GameCatCard from "./GameCatCard";
 
 const AddCategoryInputs = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [categoryName, setCategoryName] = useState("");
+  const [categoryTitle, setCategoryTitle] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async () => {
     console.log("running submit");
 
-    if (!selectedFile || !categoryName) {
+    if (!selectedFile || !categoryTitle) {
       setErrorMessage("Please fill in all fields");
       console.log("Please fill in all fields");
 
       return;
     }
     const formData = new FormData();
-    formData.append("pfp", selectedFile);
+    formData.append("category_picture", selectedFile);
+    formData.append("title", categoryTitle);
+    formData.append("description", categoryDescription);
     try {
-      const response = await api.post(`/lfg/category_picture`, formData, {
+      const response = await api.post(`/lfg/create_category`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log("New image URL:", response.data.imageUrl);
+      console.log("Category created:", response.data);
+      setSelectedFile(null);
+      setCategoryTitle("");
+      setCategoryDescription("");
     } catch (error) {
-      console.log("Error uploading file" + error);
+      console.error("Error uploading file" + error);
+      setErrorMessage("Error creating category" + error);
     }
   };
   return (
@@ -41,7 +47,7 @@ const AddCategoryInputs = () => {
           <Form>
             <Form.Group controlId="formCategoryName">
               <Form.Label>Category Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter category name" onChange={(e) => setCategoryName(e.target.value)} />
+              <Form.Control type="text" placeholder="Enter category name" onChange={(e) => setCategoryTitle(e.target.value)} />
             </Form.Group>
 
             <Form.Group controlId="formCategoryDescription">
@@ -53,7 +59,7 @@ const AddCategoryInputs = () => {
           </Form>
         </Col>
         <Col lg={{ span: 3, offset: 2 }}>
-          <GameCatCard image={selectedFile ? URL.createObjectURL(selectedFile) : null} title={categoryName} />
+          <GameCatCard image={selectedFile ? URL.createObjectURL(selectedFile) : null} title={categoryTitle} />
         </Col>
       </Row>
     </Container>

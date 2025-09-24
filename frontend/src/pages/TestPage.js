@@ -1,10 +1,11 @@
 import ImageUploader from "../components/ImageUploader";
+import CreatePost from "../components/CreatePost";
 
 const TestPage = () => {
   return (
     <div>
       <h1>Test Page</h1>
-        <ImageUploader buttonLabel={"Upload Image"}/>
+        <CreatePost />
     </div>
   );
 };
