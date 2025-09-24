@@ -1,21 +1,21 @@
 .outline-button-container {
     height: 6.5vh;
-    width: 100%;
+    width: 100% !important;
     align-items: center;
     justify-content: center;
     display: flex;
 }
 
 .outline-button-component {
-    height: auto;
-    width: auto;
-    padding-left: 2vw;
-    padding-right: 2vw;
-    border-radius: 15px;
-    border-color: #EDE4F1;
-    background-color: rgba(0, 0, 0, 0);
-    border-width: 0.3vw;
-    font-size: 20px;
+    height: auto !important; 
+    width: auto !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    border-radius: 15px !important;
+    border-color: #EDE4F1 !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    border-width: 0.3vw !important;
+    font-size: 20px !important;
 }
  @media screen and (max-width: 768px) {
     .outline-button-container {
@@ -25,9 +25,9 @@
  }
 
 .outline-button-component:hover {
-    background-color: #EDE4F1;
-    color: #171123;
-    border-color: #EDE4F1;
+    background-color: #EDE4F1 !important;
+    color: #171123 !important;
+    border-color: #EDE4F1 !important;
 }
 
 .btn-primary {

@@ -12,11 +12,8 @@ import { useState } from "react";
 const dummyUser = {
   profilePic: userPFP,
   userName: "Synergyy",
-  userBio: `Hey there! Im Synergyy.
-Im an avid league of legends enjoyer but i enjoy playing shooter games including Fortnite, Marvel Rivals, and Overwatch 2. Other games not listed on this site i play include Monster Hunter, Peak, and Repo! `,
-    friends: [
-        "Rhi","caleb", "keegan", "Tim", "Kelvin" 
-    ],
+  userBio: `This user has no bio yet`,
+    friends: "No friends added yet",
     platforms: [
         "Discord","Steam"
     ]
@@ -29,7 +26,7 @@ let tabsData = [
     },
     {
         heading:'Friends',
-        value: dummyUser.friends.flat(),
+        value: dummyUser.friends,
     }
 ]
 
@@ -37,6 +34,8 @@ const UserProfile = () => {
 
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+
 
   const getSocialIcon = (platform) => {
   switch (platform) {
@@ -52,8 +51,10 @@ const UserProfile = () => {
     const fetchProfileData = async () => {
       try {
         const response = await api.get("/user/profile");
-        setProfileData(response.data);
-        console.log(response.data);
+        setProfileData(response.data.data);
+        // console.log(response.data);
+        
+        // console.log(profileData);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -61,6 +62,18 @@ const UserProfile = () => {
     }
     fetchProfileData();
   }, [])
+
+  useEffect(() => {
+    console.log(profileData);
+    tabsData[0].value = profileData?.bio || "No bio available.";
+    tabsData[1].value = "No friends added yet"
+  }, [profileData]);
+  if (isLoading) {
+    return <p>Loading profile...</p>;
+  }
+  if (!profileData) {
+    return <p>Could not load profile.</p>;
+  }
   return (
     <div style={{ height: "80vh" }}>
       <Container fluid className="px-5 py-5">
@@ -68,20 +81,20 @@ const UserProfile = () => {
           <Col lg={3}>
             {/* profile and edit profile btn */}
             <div style={{ width: "100%", aspectRatio: "1 / 1" }}>
-              <img src={dummyUser.profilePic} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", border: "5px solid #EDE4F1" }} />
+              <img src={profileData?.profile_picture} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", border: "5px solid #EDE4F1" }} />
             </div>
             <div style={{marginTop:'10vh'}}>
               <OutlineButton buttonLabel={"Edit Profile"} buttonLink={"/"} />
             </div>
           </Col>
           <Col lg={{span:7, offset:1}} className="pt-2">{/* username and summary or friends */}
-            <h1 className="profile-username-spacing profile-username">{dummyUser.userName}</h1>
+            <h1 className="profile-username-spacing profile-username">{profileData.username}</h1>
             {/* tab switcher */}
             <div style={{height:'33vh'}}>
                 <Tabs tabValues={tabsData} defaultTab="one"/>
             </div>
             <div style={{paddingTop:'5vh'}}>
-            {dummyUser.platforms.map((value, index) => (
+            {profileData?.communication_method && profileData?.communication_method.split(",").map((value, index) => (
                 getSocialIcon(value)
             ))}
             </div>

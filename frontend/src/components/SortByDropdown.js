@@ -20,7 +20,6 @@ const SortByDropdown = () => {
           id="demo-simple-select-label"
           sx={{
             color: "#EDE4F1",
-            fontFamily: 'Audiowide, sans-serif',
             '&.Mui-focused': { color: '#EDE4F1' },
           }}
         >

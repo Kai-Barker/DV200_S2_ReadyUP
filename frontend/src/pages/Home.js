@@ -51,7 +51,7 @@ const Home = () => {
         </Row>
       </Container>
       <h1 className="home-section-heading">How it works</h1>
-      <Container fluid className="px-5">
+      <Container fluid className="px-5 mb-5">
         <Row className="gx-5 align-items-stretch">
           <Col md={3}>
             <GameInfoCard title={"Select The Game You’d Like To Play"} description="Browse Posts > Click a Banner" />

@@ -21,8 +21,7 @@ const SearchBar = () => {
                 color: "#EDE4F1",
                 fontFamily: 'Audiowide, sans-serif'
               },
-              "& .MuiInputLabel-root": { color: "#EDE4F1",
-                fontFamily: 'Audiowide, sans-serif',},
+              "& .MuiInputLabel-root": { color: "#EDE4F1"},
               "& .MuiInputLabel-root.Mui-focused": { color: "#EDE4F1" },
               "& .MuiOutlinedInput-root": {
                 borderRadius: "40px",

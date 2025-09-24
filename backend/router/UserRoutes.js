@@ -8,7 +8,7 @@ const upload = multer({ storage: storage });
 
 module.exports = function (db, cloudinary) {
   router.post("/upload_pfp", authMiddleware , upload.single("pfp"), async (req, res) => {
-    const userID = req.user.userID;
+    const userID = req.user.id;
     if (!req.file) {
       return res.status(400).send("No file uploaded");
     }
@@ -19,6 +19,7 @@ module.exports = function (db, cloudinary) {
         asset_folder: "profile_pictures",
       });
       const imageUrl = result.secure_url;
+      console.log("Image uploaded to Cloudinary: ", imageUrl);
       const sql = "UPDATE users SET profile_picture = ? WHERE user_id = ?";
       db.query(sql, [imageUrl, userID], (err, result) => {
         if (err) {
@@ -42,11 +43,8 @@ module.exports = function (db, cloudinary) {
     
   })
   router.get("/profile", authMiddleware, (req,res) => {
-    console.log(req);
     
     const userID = req.user.id;
-    console.log("Running profile fetch");
-    console.log(userID);
     
     const sql = "SELECT * from users WHERE users.user_id = ?";
     db.query(sql, [userID], (err, results) => {

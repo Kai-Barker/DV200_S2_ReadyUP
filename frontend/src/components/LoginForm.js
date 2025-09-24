@@ -5,8 +5,13 @@ import { Link } from "react-router-dom";
 import CheatCode from "./CheatCode";
 import { useState, useEffect } from "react";
 import api from "../api";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const forceRefreshPage = () => {
+    window.location.reload();
+  };
   const handleCheatInput = (direction) => {
     setCheatCode(cheatCode + direction);
     console.log(cheatCode);
@@ -22,6 +27,8 @@ const LoginForm = () => {
       console.log(response.data);
       console.log("Login successful");
       localStorage.setItem("token", response.data.token);
+      navigate("/");
+      forceRefreshPage();
     } catch (error) {
       console.error(error);
     }

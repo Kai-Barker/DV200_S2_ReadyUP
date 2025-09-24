@@ -3,7 +3,7 @@ import CategoryAdmin from "../components/CategoryAdmin";
 import dummyImg from "../assets/images/FN PlaceHolder.png";
 import { Container, Row, Col } from "react-bootstrap";
 import PostAdmin from "../components/ReportedPost";
-
+import AddCategoryInputs from "../components/AddCategoryInputs";
 
 const dummyData = {
   image: dummyImg,
@@ -54,6 +54,17 @@ const Admin = () => {
                 console.log("Delete Post");
               }}
             />
+          </Col>
+        </Row>
+      </Container>
+      <h1 className="admin-heading">Add A Category</h1>
+      <Container fluid className="px-5">
+        {/* <Row>
+
+        </Row> */}
+        <Row className="gx-5">
+          <Col>
+            <AddCategoryInputs />
           </Col>
         </Row>
       </Container>

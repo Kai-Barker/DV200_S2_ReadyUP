@@ -1,9 +1,7 @@
 import { Button } from "react-bootstrap";
 import "../css/ImageUploader.css";
 import { useState } from "react";
-import axios from "axios";
-
-const userID = "7"; // Placeholder userID for now until i get JWT going
+import api from "../api";
 
 const FileUploader = ({ buttonLabel }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -21,7 +19,7 @@ const FileUploader = ({ buttonLabel }) => {
     const formData = new FormData();
     formData.append("pfp", selectedFile);
     try {
-      const response = await axios.post(`http://localhost:5000/api/user/${userID}/upload_pfp`, formData, {
+      const response = await api.post(`/user/upload_pfp`, formData, {
         //This extra param is pretty much to say its a file upload and not a standard json object? i think.
         headers: {
           "Content-Type": "multipart/form-data",
