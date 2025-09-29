@@ -6,9 +6,16 @@ import TagFilterer from "../components/TagFilterer";
 import PostCard from "../components/PostCard";
 import profilePic from "../assets/images/towelahri.jpg";
 import PaginationControls from "../components/PaginationControls";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import CreatePost from "../components/CreatePost";
+import OutlineButton from "../components/OutlineButtonFunction";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import useAuth from "../customHooks/auth";
 
 const dummyData = [
   {
@@ -92,6 +99,23 @@ const BrowsePostsPage = () => {
   const [error, setError] = useState('');
   const postsPerPage = 4;
 
+
+
+
+  const {user, isLoggedIn} = useAuth();
+
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
   const totalPages = Math.ceil(posts.length / postsPerPage);
 
   useEffect(() => {
@@ -122,11 +146,16 @@ const BrowsePostsPage = () => {
   };
   const currentPosts = posts.slice(pageIndex, pageIndex + postsPerPage);
   return (
+    <>
     <Container className="browse-posts-container p-5" fluid>
       <Row>
-        <Col>
+        <Col md={3}>
           <h1 style={{ fontSize: "2.8rem", color: "#EDE4F1" }}>{title}</h1>
         </Col>
+        {isLoggedIn && (<Col md={{span:2, offset:7}}>
+          <OutlineButton buttonLabel={"Create Post"} buttonFunction={handleClickOpen} />
+        </Col>)}
+        
       </Row>
       <Row className="gx-3 my-4">
         <Col md={5}>
@@ -138,6 +167,9 @@ const BrowsePostsPage = () => {
         <Col md={4}>
           <SearchBar />
         </Col>
+        {/* <Col md={2}>
+          <OutlineButton buttonLabel={"Create Post"} buttonFunction={() => {}} />
+        </Col> */}
       </Row>
       <Row>
           {currentPosts.map((post, index) => (
@@ -161,8 +193,25 @@ const BrowsePostsPage = () => {
           <PaginationControls currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
         </Col>
       </Row>
-      <CreatePost />
+      
     </Container>
+    <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth="lg" PaperProps={{
+    sx: {
+      backgroundColor: '#171123',
+      border: '2px solid #EDE4F1',
+      borderRadius: '40px',
+      color: '#EDE4F1',
+    },
+  }}>
+        <DialogTitle sx={{ fontFamily: 'Audiowide, sans-serif', borderBottom: '1px solid #EDE4F1' }}>Create Post</DialogTitle>
+        <DialogContent sx={{ paddingTop: '2rem !important' }}>
+          <CreatePost />
+        </DialogContent>
+        <DialogActions sx={{ borderTop: '1px solid #EDE4F1' }}>
+          <Button onClick={handleClose} className="cursor-target" sx={{ color: '#73EEDC', fontFamily: 'Audiowide, sans-serif',fontSize:'20px', marginRight: '3vh' }}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

@@ -61,11 +61,6 @@ const CreatePost = () => {
     return(
         <Container>
             <Row>
-                <Col>
-                    <h1 className='create-post-heading'>Create Post</h1>
-                </Col>
-            </Row>
-            <Row>
                 <Col md={7} className='d-flex flex-column gap-4'>
                     <TextFieldInput label={"Title"} onChangeFunction={(event) => setTitle(event.target.value)} isMultiline={false} />
                     <TextFieldInput label={"Description"} onChangeFunction={(event) => setDescription(event.target.value)} isMultiline={true} minRows={6} maxRows={6}/>

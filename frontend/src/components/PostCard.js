@@ -1,11 +1,18 @@
 import { Container, Row, Col } from "react-bootstrap";
 import "../css/PostCard.css";
 import Tag from "../components/Tag";
+import dayjs from 'dayjs';
 
 import { format, isToday, isPast, formatDistanceToNowStrict, parseISO } from "date-fns"; 
 
 const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, description, tags}) => {
+  console.log(startDate);
+  
   let startDateOrTime = parseISO(startDate);
+  console.log(startDate);
+  console.log(startDateOrTime);
+  
+  
   const formatDateTime = (dateTime) => {
     if (isToday(dateTime)) {
       if (isPast(dateTime)) {

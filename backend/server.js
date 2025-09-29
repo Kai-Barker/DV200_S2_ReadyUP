@@ -30,6 +30,7 @@ const db = mysql.createConnection({
   user: "root",
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  timezone: '+00:00',
 });
 
 db.connect((err) => {
