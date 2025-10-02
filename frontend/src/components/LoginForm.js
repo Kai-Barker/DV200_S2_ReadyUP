@@ -18,6 +18,7 @@ const LoginForm = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
     try {
       const response = await api.post("/auth/login", {
         email,
@@ -31,11 +32,19 @@ const LoginForm = () => {
       forceRefreshPage();
     } catch (error) {
       console.error(error);
+      ClearFields();
+      setMessage("One or more fields are incorrect. Please try again");
     }
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cheatCode, setCheatCode] = useState("");
+  const [message, setMessage] = useState("");
+
+  const ClearFields = () => {
+    setCheatCode("");
+    setPassword("");
+  }
   return (
     <Form onSubmit={handleSubmit}>
       <div className="login-form-group">
@@ -56,6 +65,7 @@ const LoginForm = () => {
           <CheatCode onInput={handleCheatInput} />
         </Form.Group>
       </div>
+      <h5 style={{marginTop:'2vh', color:'red'}}>{message}</h5>
       <div className="login-center-component-wrapper" style={{ marginTop: "3vh" }}>
         <Button className="cursor-target login-submit-button" type="submit">
           LETS GO

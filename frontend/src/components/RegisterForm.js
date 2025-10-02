@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 import CheatCode from "./CheatCode";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const handleCheatInput = (direction) => {
     setCheatCode(cheatCode + direction);
     console.log(cheatCode);
@@ -26,8 +28,11 @@ const LoginForm = () => {
       });
       console.log(response.data);
       console.log("Registration successful");
+      navigate("/login");
     } catch (error) {
       console.error(error);
+      setMessage("Error Registering User");
+      ClearFields();
     }
   };
   const [username, setUsername] = useState("");
@@ -35,6 +40,14 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [cheatCode, setCheatCode] = useState("");
+  const [message, setMessage] = useState("");
+
+
+   const ClearFields = () => {
+    setCheatCode("");
+    setPassword("");
+    setConfirmPassword("");
+  }
   return (
     <Form onSubmit={handleSubmit}>
       <div className="login-form-group">
@@ -73,6 +86,7 @@ const LoginForm = () => {
           <CheatCode onInput={handleCheatInput} />
         </Form.Group>
       </div>
+      <h5 style={{marginTop:'2vh', color:'red'}}>{message}</h5>
       <div className="login-center-component-wrapper" style={{ marginTop: "3vh" }}>
         <Button className="cursor-target login-submit-button" type="submit">
           LETS GO
