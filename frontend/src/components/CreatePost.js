@@ -7,7 +7,7 @@ import OutlineButtonFunction from './OutlineButtonFunction'
 import {useParams} from 'react-router-dom';
 import api from '../api';
 
-const CreatePost = () => {
+const CreatePost = ({refresh , setOpen}) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState(null);
@@ -47,6 +47,8 @@ const CreatePost = () => {
         try {
             const response = await api.post('/lfg/post', postData);
             console.log("created post", response.data);
+            refresh();
+            setOpen(false);
         } catch (error) {
             console.error("Failed to create post", error);
             

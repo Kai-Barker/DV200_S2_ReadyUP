@@ -6,7 +6,7 @@ import GameCatCard from "../components/GameCatCard";
 import dummyImg from "../assets/images/FN PlaceHolder.png";
 import PaginationControls from "../components/PaginationControls";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
 
 // const categories = [
 //   {
@@ -73,7 +73,7 @@ const CategoriesPage = () => {
   useEffect(() => {
     const fetchCategories = async() => {
       try {
-        const response = await axios.get('http://localhost:5000/api/lfg');
+        const response = await api.get('/lfg');
         const data = await response.data;
         setCategories(data);
         console.log(data);

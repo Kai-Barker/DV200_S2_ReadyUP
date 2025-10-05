@@ -5,14 +5,8 @@ import dayjs from 'dayjs';
 
 import { format, isToday, isPast, formatDistanceToNowStrict, parseISO } from "date-fns"; 
 
-const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, description, tags}) => {
-  console.log(startDate);
-  
+const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, description, tags, onCardClick = (() => {})}) => {
   let startDateOrTime = parseISO(startDate);
-  console.log(startDate);
-  console.log(startDateOrTime);
-  
-  
   const formatDateTime = (dateTime) => {
     if (isToday(dateTime)) {
       if (isPast(dateTime)) {
@@ -28,7 +22,7 @@ const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, descr
   
   
   return (
-    <Container className="cardBorder" style={{color:"#EDE4F1"}}>
+    <Container className="cardBorder cursor-target" style={{color:"#EDE4F1"}} onClick={onCardClick}>
       <Row>
         <Col lg={3} style={{borderRight:'5px solid #EDE4F1'}}>
           {/* pfp */}
@@ -91,7 +85,7 @@ const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, descr
           <h2 className="my-2">{title}</h2>
           <p style={{ fontSize: "20px" }}>{description}</p>
         </Col>
-        <Col lg={3}  className="d-flex flex-wrap gap-3 my-4 mx-4" style={{ alignItems: "flex-start", alignContent: 'flex-start' }}>
+        <Col lg={2}  className="d-flex flex-wrap gap-3 my-4 mx-4" style={{ alignItems: "flex-start", alignContent: 'flex-start' }}>
           {/* tags */}
           {tags && tags.map((tagText, index) => (
             <Tag key={index} tagText={tagText} />

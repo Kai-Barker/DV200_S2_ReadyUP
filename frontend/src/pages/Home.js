@@ -5,6 +5,9 @@ import GameInfoCard from "../components/HomeInfoCard";
 import GameInfoCardSpecial from "../components/HomeInfoCardSpecial";
 import HeroSection from "../components/HeroSection";
 import "../css/Home.css";
+import api from "../api";
+import {useState, useEffect} from "react";
+
 
 const dummyData = {
   image: dummyImg,
@@ -13,6 +16,27 @@ const dummyData = {
 };
 
 const Home = () => {
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchCategories = async() => {
+      try {
+        const response = await api.get('/lfg/top_posts');
+        const data = await response.data;
+        setCategories(data);
+        console.log(data);
+        
+        setIsLoading(false);
+      } catch (error) {
+        setError('Error fetching categories');
+        setIsLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <div>
       {/* Hero Section */}
@@ -20,34 +44,16 @@ const Home = () => {
       <h1 className="home-section-heading">Popular Games</h1>
       <Container fluid className="px-5">
         <Row className="gx-5">
-          <Col md={3}>
-            <GameCatCard
-              image={dummyData.image}
-              title={dummyData.title}
-              numPosts={dummyData.numPosts}
-            />
-          </Col>
-          <Col md={3}>
-            <GameCatCard
-              image={dummyData.image}
-              title={dummyData.title}
-              numPosts={dummyData.numPosts}
-            />
-          </Col>
-          <Col md={3}>
-            <GameCatCard
-              image={dummyData.image}
-              title={dummyData.title}
-              numPosts={dummyData.numPosts}
-            />
-          </Col>
-          <Col md={3}>
-            <GameCatCard
-              image={dummyData.image}
-              title={dummyData.title}
-              numPosts={dummyData.numPosts}
-            />
-          </Col>
+          {categories.map((game, index) => (
+            <Col key={index} md={3}>
+              <GameCatCard
+                image={game.category_picture}
+                title={game.title}
+                numPosts={game.num_posts}
+                categoryID={game.category_id}
+              />
+            </Col>
+          ))}
         </Row>
       </Container>
       <h1 className="home-section-heading">How it works</h1>

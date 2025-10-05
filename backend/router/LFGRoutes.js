@@ -18,10 +18,21 @@ module.exports = function (db, cloudinary) {
       return res.status(200).json(results);
     });
   });
+  router.get("/top_posts", (req, res) => {
+    const sql =
+      "SELECT category.*, COUNT(posts.post_id) AS num_posts  FROM category LEFT JOIN posts ON category.category_id=posts.category_id GROUP BY category.title ORDER BY num_posts DESC LIMIT 4";
+    db.query(sql, (err, results) => {
+      if (err) {
+        console.error("Error fetching categories: ", err);
+        return res.status(500).json({ message: "Error fetching categories" });
+      }
+      return res.status(200).json(results);
+    });
+  });
   router.get("/:title/posts", (req, res) => {
     const title = req.params.title;
     const sql =
-      "SELECT posts.*, users.profile_picture FROM posts LEFT JOIN category ON category.category_id = posts.category_id LEFT JOIN users ON posts.user_id = users.user_id  WHERE category.title = ?";
+      "SELECT posts.*, users.profile_picture, users.user_id FROM posts LEFT JOIN category ON category.category_id = posts.category_id LEFT JOIN users ON posts.user_id = users.user_id  WHERE category.title = ? AND posts.num_joined != posts.max_players";
     db.query(sql, [title], (err, results) => {
       if (err) {
         console.error("Error fetching posts for category: ", err);
@@ -89,5 +100,36 @@ module.exports = function (db, cloudinary) {
       }})
     })
   });
+
+  router.post("/posts/join", authMiddleware, async (req, res) => {
+    if (req.user.role != "user" && req.user.role != "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    const userID = req.user.id;
+    const postID = req.body.postID;
+
+
+    const checkSQL ="SELECT num_joined, max_players, (SELECT COUNT(*) FROM join_post WHERE post_id = ? AND user_id = ?) AS already_joined FROM posts WHERE post_id = ?";
+    db.query(checkSQL, [postID, userID, postID], (err, result) => {
+      if (err || result.length === 0) {
+        return res.status(500).json({message:"Error finding post"});
+      }
+      const post = result[0];
+      if (post.already_joined > 0) {
+        return res.status(409).json({message:"Error, you have already joined this post"});
+      }
+      if(post.num_joined >= post.max_players){
+        return res.status(409).json({message:"Error, post has reached max capacity"});
+      }
+      const sql = "INSERT INTO join_post (post_id, user_id) VALUES (?, ?)"
+      db.query(sql, [postID, userID], (err, result) => {
+        if (err) {
+          console.error("Database error",err);
+          return res.status(500).json({message:"Error creating post"});
+        }
+        return res.status(200).json({message:'post created successfully'});
+      })
+    })
+  })
   return router;
 };
