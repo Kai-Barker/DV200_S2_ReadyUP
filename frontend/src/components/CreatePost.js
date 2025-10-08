@@ -6,14 +6,19 @@ import { useEffect } from 'react';
 import OutlineButtonFunction from './OutlineButtonFunction'
 import {useParams} from 'react-router-dom';
 import api from '../api';
+import PostTags from './PostTags';
 
-const CreatePost = ({refresh , setOpen}) => {
+const CreatePost = ({refresh , setOpen, currentTags}) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [numPlayers, setNumPlayers] = useState(1);
     const [tags, setTags] = useState([]);
     const {gameTitle} = useParams();
+    useEffect(() => {
+        console.log(tags);
+        
+    }, [tags]);
 
     const handleNumPlayers = (e) => {
         let inputNumPlayers=e.target.value;
@@ -38,8 +43,11 @@ const CreatePost = ({refresh , setOpen}) => {
             description: description,
             startDate: startDate ? startDate.toISOString() : null,
             numPlayers: numPlayers,
-            categoryName: gameTitle
+            categoryName: gameTitle,
+            tags: tags.map(tag => tag.tag_name)
         }
+        console.log(postData);
+        
         if (!postData.title|| !postData.description || !postData.startDate|| !postData.numPlayers|| !postData.categoryName) {
             alert("fill in all fields");
             return;
@@ -59,17 +67,18 @@ const CreatePost = ({refresh , setOpen}) => {
         console.log(gameTitle);
         
         
-    }, [startDate])
+    }, [startDate]);
     return(
         <Container>
-            <Row>
+            <Row className='g-4'>
                 <Col md={7} className='d-flex flex-column gap-4'>
                     <TextFieldInput label={"Title"} onChangeFunction={(event) => setTitle(event.target.value)} isMultiline={false} />
-                    <TextFieldInput label={"Description"} onChangeFunction={(event) => setDescription(event.target.value)} isMultiline={true} minRows={6} maxRows={6}/>
+                    <TextFieldInput label={"Description"} onChangeFunction={(event) => setDescription(event.target.value)} isMultiline={true} minRows={10} maxRows={10}/>
                 </Col>
                 <Col md={{span:4, offset:1}} className='d-flex flex-column gap-4'>
                     <DateTimePicker label={"Start Time"} onChangeFunction={setStartDate} value={startDate} />
                     <TextFieldInput label={"Number of Players"} onChangeFunction={handleNumPlayers} isMultiline={false} minRows={1} maxRows={1} isNumeric={true} value={numPlayers} />
+                    <PostTags tags={tags} setTags={setTags} currentTags={currentTags}/>
                 </Col>
             </Row>
             <Row style={{marginTop:'5vh'}}>

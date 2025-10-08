@@ -81,11 +81,11 @@ const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, descr
             </Col>
           </Row>
         </Col>
-        <Col lg={5} className="my-4 mx-4">
+        <Col lg={{span:4, offset:1}} className="my-4">
           <h2 className="my-2">{title}</h2>
           <p style={{ fontSize: "20px" }}>{description}</p>
         </Col>
-        <Col lg={2}  className="d-flex flex-wrap gap-3 my-4 mx-4" style={{ alignItems: "flex-start", alignContent: 'flex-start' }}>
+        <Col lg={{span:3, offset:1}}  className="d-flex flex-wrap gap-3 my-4" style={{ alignItems: "flex-start", alignContent: 'flex-start' }}>
           {/* tags */}
           {tags && tags.map((tagText, index) => (
             <Tag key={index} tagText={tagText} />

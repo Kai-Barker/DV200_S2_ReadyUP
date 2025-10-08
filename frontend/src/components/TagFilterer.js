@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
 
-const TagFilterer = () => {
+const TagFilterer = ({currentTags}) => {
   const [tags, setTags] = new useState([]);
   const handleTagChange = (e, newTags) => {
     if (newTags.length <= 3) {
@@ -17,8 +17,8 @@ const TagFilterer = () => {
         className="cursor-target"
         multiple
         id="tags-outlined"
-        options={top100Films}
-        getOptionLabel={(option) => option.title}
+        options={currentTags}
+        getOptionLabel={(option) => option.tag_name}
         filterSelectedOptions
         value={tags}
         onChange={handleTagChange}

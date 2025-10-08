@@ -92,6 +92,7 @@ const BrowsePostsPage = () => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentTags, setCurrentTags] = useState([]);
   const postsPerPage = 4;
   const [currentPost, setCurrentPost] = useState(null);
 
@@ -104,7 +105,7 @@ const BrowsePostsPage = () => {
       alert("Post is full");
       return;
     }
-    
+
     if (currentPost.user_id == user.id) {
       alert("You cant join your own post silly");
       handleClose();
@@ -155,15 +156,43 @@ const BrowsePostsPage = () => {
       const response = await api.get(`/lfg/${title}/posts`);
       const data = await response.data;
       console.log(data);
-      setPosts(data);
-      setIsLoading(false);
+      //Make new object with tags as an array rather than string
+      const dataWithTags = data.map((post) => {
+        return {
+          post_id: post.post_id,
+          description: post.description,
+          category_id: post.category_id,
+          title: post.title,
+          expiry_time: post.expiry_time,
+          start_time: post.start_time,
+          max_players: post.max_players,
+          num_joined: post.num_joined,
+          user_id: post.user_id,
+          profile_picture: post.profile_picture,
+          tags: post.tags? post.tags.split(',') : [],
+        };
+      });
+      setPosts(dataWithTags);
     } catch (error) {
       setError("Error fetching posts");
-      setIsLoading(false);
     }
   };
+
+  const fetchTags = async() => {
+    try {
+      const response = await api.get(`/lfg/${title}/tags`);
+      const data = response.data;
+      console.log(data);
+      setCurrentTags(data);
+      setIsLoading(false);
+    } catch (error) {
+      setError("Error fetching tags");
+      setIsLoading(false);
+    }
+  }
   useEffect(() => {
     fetchPosts();
+    fetchTags();
   }, [title]);
 
   const handlePageChange = (newPage) => {
@@ -188,7 +217,7 @@ const BrowsePostsPage = () => {
         </Row>
         <Row className="gx-3 my-4">
           <Col md={5}>
-            <TagFilterer />
+            <TagFilterer currentTags={currentTags} />
           </Col>
           <Col md={3}>
             <SortByDropdown />
@@ -204,6 +233,8 @@ const BrowsePostsPage = () => {
           {currentPosts.map((post, index) => (
             <Row key={post.post_id}>
               <Col className="my-3">
+              {console.log(post.description)
+              }
                 <PostCard
                   profilePic={post.profile_picture || profilePic}
                   startDate={post.start_time}
@@ -276,7 +307,7 @@ const BrowsePostsPage = () => {
           <>
             <DialogTitle sx={{ fontFamily: "Audiowide, sans-serif", borderBottom: "1px solid #EDE4F1" }}>Create Post</DialogTitle>
             <DialogContent sx={{ paddingTop: "2rem !important" }}>
-              <CreatePost refresh={fetchPosts} setOpen={setOpen} />
+              <CreatePost refresh={fetchPosts} setOpen={setOpen} currentTags={currentTags} />
             </DialogContent>
             <DialogActions sx={{ borderTop: "1px solid #EDE4F1" }}>
               <Button
