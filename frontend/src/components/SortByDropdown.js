@@ -6,11 +6,10 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useState, useEffect } from "react";
 
-const SortByDropdown = () => {
-  const [sort, setSort] = useState("");
+const SortByDropdown = ({label, options, setFunction, value}) => {
 
   const handleChange = (event) => {
-    setSort(event.target.value);
+    setFunction(event.target.value);
   };
 
   return (
@@ -23,12 +22,12 @@ const SortByDropdown = () => {
             '&.Mui-focused': { color: '#EDE4F1' },
           }}
         >
-          Sort By:
+          {label}
         </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={sort}
+          value={value}
           label="Sort By"
           onChange={handleChange}
           sx={{
@@ -45,12 +44,15 @@ const SortByDropdown = () => {
             },'& .MuiInputBase-input':{
                 color: '#EDE4F1',
                 fontFamily: 'Audiowide, sans-serif'
-            }
+            },
+            '& .MuiSelect-icon': {
+      color: '#EDE4F1' 
+    }
           }}
         >
-          <MenuItem value="name" style={{fontFamily: 'Audiowide, sans-serif'}}>Name</MenuItem>
-          <MenuItem value="popularity" style={{fontFamily: 'Audiowide, sans-serif'}}>Most Popular</MenuItem>
-          <MenuItem value="popularity_desc" style={{fontFamily: 'Audiowide, sans-serif'}}>Most Popular DESC</MenuItem>
+          {options?.map(option => {
+            return <MenuItem value={option} style={{fontFamily: 'Audiowide, sans-serif'}}>{option}</MenuItem>;
+          })}
         </Select>
       </FormControl>
     </Box>

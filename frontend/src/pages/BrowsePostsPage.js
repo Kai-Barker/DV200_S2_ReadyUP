@@ -85,6 +85,8 @@ const dummyData = [
   },
 ];
 
+
+
 const BrowsePostsPage = () => {
   const title = useParams().gameTitle;
   const [currentPage, setCurrentPage] = useState(1);

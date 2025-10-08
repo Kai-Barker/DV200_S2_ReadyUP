@@ -42,8 +42,10 @@ module.exports = function (db, cloudinary) {
     }
   });
   router.post("/update_profile", authMiddleware , upload.single("pfp"), async (req, res) => {
+    console.log(req.body);
     const userID = req.user.id;
     const {bio, communication_method, username} = req.body;
+    
     if (!req.file||!bio||!communication_method||!username) {
       return res.status(400).send("No file uploaded");
     }

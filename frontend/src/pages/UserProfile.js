@@ -14,6 +14,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import UpdateProfileInput from "../components/UpdateProfileInput";
+import Tooltip from "@mui/material/Tooltip";
+
+const availablePlatforms = ["Discord", "Steam", "Xbox", "Playstation"];
 
 const dummyUser = {
   profilePic: userPFP,
@@ -50,16 +53,53 @@ const UserProfile = () => {
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
   const [editCommunicationMethods, setEditCommunicationMethods] = useState(null);
+  const [communicationMethodPlatform, setCommunicationMethodPlatform] = useState("");
+  const [communicationMethodLink, setCommunicationMethodLink] = useState("");
+  const [readableCommunicationMethods, setReadableCommunicationMethods] = useState([{}]);
 
-  const getSocialIcon = (platform) => {
+  const getSocialIcon = (platform, link) => {
+    const tooltipTitle = `Copy ${platform} ID`;
     switch (platform) {
       case "Discord":
-        return <Discord className="cursor-target" style={{ marginRight: "3vw", fontSize: "10vh", color: "#73EEDC" }} />;
+        return (
+          <Tooltip title={tooltipTitle} placement="top" arrow>
+            <Discord
+              className="cursor-target"
+              onClick={() => {
+                handleCopy(link);
+              }}
+              style={{ marginRight: "3vw", fontSize: "10vh", color: "#73EEDC" }}
+            />
+            ;
+          </Tooltip>
+        );
       case "Steam":
-        return <Steam className="cursor-target" style={{ marginRight: "3vw", fontSize: "10vh", color: "#73EEDC" }} />;
+        return (
+          <Tooltip title={tooltipTitle} placement="top" arrow>
+            <Steam
+              className="cursor-target"
+              onClick={() => {
+                handleCopy(link);
+              }}
+              style={{ marginRight: "3vw", fontSize: "10vh", color: "#73EEDC" }}
+            />
+          </Tooltip>
+        );
       default:
         return <></>;
     }
+  };
+  const handleCopy = (linkToCopy) => {
+    if (!linkToCopy) return;
+
+    navigator.clipboard
+      .writeText(linkToCopy)
+      .then(() => {
+        alert(`Copied user code to clipboard!`);
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
   };
   const fetchProfileData = async () => {
     try {
@@ -76,16 +116,37 @@ const UserProfile = () => {
   useEffect(() => {
     fetchProfileData();
   }, []);
+  useEffect(() => {
+    if (communicationMethodLink != "" && communicationMethodPlatform != "") {
+      setEditCommunicationMethods(`${communicationMethodPlatform},${communicationMethodLink}`);
+    }
+  }, [communicationMethodLink, communicationMethodPlatform]);
+  useEffect(() => {
+    console.log(editCommunicationMethods);
+  }, [editCommunicationMethods]);
 
   useEffect(() => {
     console.log(profileData);
+    if (profileData) {
+      const tempComMethod = profileData?.communication_method.split(",");
+      let tempComArr = [];
+      for (let i = 0; i < tempComMethod.length; i += 2) {
+        tempComArr.push({
+          platform: tempComMethod[i],
+          link: tempComMethod[i + 1],
+        });
+      }
+      console.log(tempComArr);
+
+      setReadableCommunicationMethods(tempComArr);
+    }
     tabsData[0].value = profileData?.Bio || "No bio available.";
     tabsData[1].value = "No friends added yet";
     if (!profileData) {
       return;
     }
     setEditUsername(profileData.username);
-    setEditBio(profileData.bio);
+    setEditBio(profileData.Bio);
     setEditProfilePicture(profileData.profile_picture);
     setEditCommunicationMethods(profileData.communication_method);
   }, [profileData]);
@@ -95,21 +156,20 @@ const UserProfile = () => {
       return;
     }
     const formData = new FormData();
-    
+
     formData.append("pfp", editProfilePicture);
     formData.append("username", editUsername);
     formData.append("communication_method", editCommunicationMethods);
     formData.append("bio", editBio);
     console.log("FormData entries:", ...formData.entries());
     try {
-      const response = await api.post('/user/update_profile', formData, {
+      const response = await api.post("/user/update_profile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       console.log("Updated profile successfully", response.data);
       fetchProfileData();
-      
     } catch (error) {
       console.error("Error updating profile" + error);
     }
@@ -142,28 +202,43 @@ const UserProfile = () => {
             <h1 className="profile-username-spacing profile-username">{profileData.username}</h1>
             {/* tab switcher */}
             <div style={{ height: "33vh" }}>
-              <Tabs tabValues={tabsData} defaultTab="one" />
+              <Tabs tabValues={tabsData} defaultTab={0} />
             </div>
-            <div style={{ paddingTop: "5vh" }}>
-              {profileData?.communication_method && profileData?.communication_method.split(",").map((value, index) => getSocialIcon(value))}
-            </div>
+            <div style={{ paddingTop: "5vh" }}>{readableCommunicationMethods.map((value) => getSocialIcon(value.platform, value.link))}</div>
           </Col>
         </Row>
       </Container>
-      <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth="lg" PaperProps={{
-    sx: {
-      backgroundColor: '#171123',
-      border: '2px solid #EDE4F1',
-      borderRadius: '40px',
-      color: '#EDE4F1',
-    },
-  }}>
-        <DialogTitle sx={{ fontFamily: 'Audiowide, sans-serif', borderBottom: '1px solid #EDE4F1' }}>Edit Profile</DialogTitle>
-        <DialogContent sx={{ paddingTop: '2rem !important' }}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth={true}
+        maxWidth="lg"
+        PaperProps={{
+          sx: {
+            backgroundColor: "#171123",
+            border: "2px solid #EDE4F1",
+            borderRadius: "40px",
+            color: "#EDE4F1",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontFamily: "Audiowide, sans-serif", borderBottom: "1px solid #EDE4F1" }}>Edit Profile</DialogTitle>
+        <DialogContent sx={{ paddingTop: "2rem !important" }}>
           <Container fluid>
             <Row>
               <Col>
-                <UpdateProfileInput username={editUsername} bio={editBio} setUsername={setEditUsername} setBio={setEditBio} setPfp={setEditProfilePicture} />
+                <UpdateProfileInput
+                  username={editUsername}
+                  bio={editBio}
+                  setUsername={setEditUsername}
+                  setBio={setEditBio}
+                  setPfp={setEditProfilePicture}
+                  availablePlatforms={availablePlatforms}
+                  setCommunicationMethodLink={setCommunicationMethodLink}
+                  setCommunicationMethodPlatform={setCommunicationMethodPlatform}
+                  communicationMethodLink={communicationMethodLink}
+                  communicationMethodPlatform={communicationMethodPlatform}
+                />
               </Col>
               <Col>
                 <div style={{ width: "100%", aspectRatio: "1 / 1" }}>
@@ -176,9 +251,21 @@ const UserProfile = () => {
             </Row>
           </Container>
         </DialogContent>
-        <DialogActions sx={{ borderTop: '1px solid #EDE4F1' }}>
-          <Button onClick={handleClose} className="cursor-target" sx={{ color: '#EDE4F1', fontFamily: 'Audiowide, sans-serif',fontSize:'20px', marginRight: '3vh' }}>Cancel</Button>
-          <Button onClick={handleSubmit} className="cursor-target" sx={{ color: '#73EEDC', fontFamily: 'Audiowide, sans-serif', fontSize:'20px', marginRight: '4vh' }}>Save Changes</Button>
+        <DialogActions sx={{ borderTop: "1px solid #EDE4F1" }}>
+          <Button
+            onClick={handleClose}
+            className="cursor-target"
+            sx={{ color: "#EDE4F1", fontFamily: "Audiowide, sans-serif", fontSize: "20px", marginRight: "3vh" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            className="cursor-target"
+            sx={{ color: "#73EEDC", fontFamily: "Audiowide, sans-serif", fontSize: "20px", marginRight: "4vh" }}
+          >
+            Save Changes
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
