@@ -208,11 +208,11 @@ const BrowsePostsPage = () => {
     <>
       <Container className="browse-posts-container p-5" fluid>
         <Row>
-          <Col md={3}>
+          <Col md={6}>
             <h1 style={{ fontSize: "2.8rem", color: "#EDE4F1" }}>{title}</h1>
           </Col>
           {isLoggedIn && (
-            <Col md={{ span: 2, offset: 7 }}>
+            <Col md={{ span: 2, offset: 4 }}>
               <OutlineButton buttonLabel={"Create Post"} buttonFunction={() => handleClickOpen(null)} />
             </Col>
           )}
