@@ -1,7 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import "../css/UserProfile.css";
 import userPFP from "../assets/images/towelahri.jpg";
-import EditProfileBTN from "../components/OutlineButton";
 import OutlineButton from "../components/OutlineButtonLGFunction";
 import Tabs from "../components/Tabs";
 import { Discord, Steam } from "react-bootstrap-icons";
@@ -15,6 +14,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import UpdateProfileInput from "../components/UpdateProfileInput";
 import Tooltip from "@mui/material/Tooltip";
+import { useParams } from "react-router-dom";
+import useAuth from "../customHooks/auth";
 
 const availablePlatforms = ["Discord", "Steam", "Xbox", "Playstation"];
 
@@ -39,6 +40,8 @@ let tabsData = [
 
 const UserProfile = () => {
   const [open, setOpen] = useState(false);
+  const { userId } = useParams();
+  const { user } = useAuth();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -103,7 +106,14 @@ const UserProfile = () => {
   };
   const fetchProfileData = async () => {
     try {
-      const response = await api.get("/user/profile");
+      let response;
+      console.log(user);
+
+      if (userId) {
+        response = await api.get(`/user/profile/${userId}`);
+      } else {
+        response = await api.get(`/user/profile`);
+      }
       setProfileData(response.data.data);
       // console.log(response.data);
 
@@ -115,7 +125,7 @@ const UserProfile = () => {
   };
   useEffect(() => {
     fetchProfileData();
-  }, []);
+  }, [userId]);
   useEffect(() => {
     if (communicationMethodLink != "" && communicationMethodPlatform != "") {
       setEditCommunicationMethods(`${communicationMethodPlatform},${communicationMethodLink}`);
@@ -128,9 +138,9 @@ const UserProfile = () => {
   useEffect(() => {
     console.log(profileData);
     if (profileData) {
-      const tempComMethod = profileData?.communication_method.split(",");
+      const tempComMethod = profileData?.communication_method?.split(",");
       let tempComArr = [];
-      for (let i = 0; i < tempComMethod.length; i += 2) {
+      for (let i = 0; i < tempComMethod?.length; i += 2) {
         tempComArr.push({
           platform: tempComMethod[i],
           link: tempComMethod[i + 1],
@@ -181,6 +191,7 @@ const UserProfile = () => {
   if (!profileData) {
     return <p>Could not load profile.</p>;
   }
+  const isOwner = user && profileData && user.id === profileData.user_id;
   return (
     <div style={{ height: "80vh" }}>
       <Container fluid className="px-5 py-5">
@@ -193,9 +204,7 @@ const UserProfile = () => {
                 style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", border: "5px solid #EDE4F1" }}
               />
             </div>
-            <div style={{ marginTop: "10vh" }}>
-              <OutlineButton buttonLabel={"Edit Profile"} buttonFunction={handleClickOpen} />
-            </div>
+            <div style={{ marginTop: "10vh" }}>{isOwner && <OutlineButton buttonLabel={"Edit Profile"} buttonFunction={handleClickOpen} />}</div>
           </Col>
           <Col lg={{ span: 7, offset: 1 }} className="pt-2">
             {/* username and summary or friends */}

@@ -2,49 +2,23 @@ import { useState, useEffect } from "react";
 import useAuth from "../customHooks/auth";
 import api from "../api";
 import "../css/UsernameAndPfpCard.css";
+import { Link } from "react-router-dom";
 
-const UsernameAndPFPCard = () => {
-  const { user } = useAuth();
-  const [profileData, setProfileData] = useState(null);
-
+const UsernameAndPFPCard = ({ username, profilePicture, userID }) => {
   useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const response = await api.get("/user/profile");
-        setProfileData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-        setProfileData({
-          username: "Synergyy",
-          profile_picture: "https://i.imgur.com/your-image-url.png",
-        });
-      }
-    };
-
-    fetchProfileData();
+    console.log(username);
   }, []);
-
-  if (!profileData) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="card-container">
+    <Link to={`/profile/${userID}`}>
+      <div className="card-container cursor-target">
+        <div className="pfp-container">
+          <img src={profilePicture} alt="Profile" className="pfp-image" />
+        </div>
 
-      <div className="pfp-container">
-        <img
-          src={profileData?.profile_picture}
-          alt="Profile"
-          className="pfp-image"
-        />
+        <div className="separator"></div>
+        <div className="username">Synergyy</div>
       </div>
-
-      <div className="separator"></div>
-
-      <div className="username">
-        {profileData?.username}
-      </div>
-    </div>
+    </Link>
   );
 };
 

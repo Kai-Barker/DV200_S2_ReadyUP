@@ -7,7 +7,7 @@ import PostCard from "../components/PostCard";
 import profilePic from "../assets/images/towelahri.jpg";
 import PaginationControls from "../components/PaginationControls";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import PostCardWithAttendees from "../components/PostCardWithAttendees";
 import CreatePost from "../components/CreatePost";
 import OutlineButton from "../components/OutlineButtonFunction";
 import Button from "@mui/material/Button";
@@ -97,6 +97,7 @@ const BrowsePostsPage = () => {
   const [currentTags, setCurrentTags] = useState([]);
   const postsPerPage = 4;
   const [currentPost, setCurrentPost] = useState(null);
+  const [currentAttendees, setCurrentAttendees] = useState([]);
 
   const { user, isLoggedIn } = useAuth();
 
@@ -131,11 +132,26 @@ const BrowsePostsPage = () => {
     }
   };
 
-  const handleClickOpen = (postData = null) => {
+  const fetchPostGroup = async (postID) => {
+    console.log("Fetching attendees");
+    
+    try {
+      const response = await api.get(`/lfg/${postID}/joined-users`)
+      console.log("Attendees:");
+      console.log(response.data);
+      setCurrentAttendees(response.data);
+    } catch (error) {
+      console.error("Failed to join post" + error);
+    }
+  }
+
+  const handleClickOpen = async (postData = null) => {
     //Doesnt work if i do postData != null for some odd fuckass reason
+    setCurrentAttendees([]);
     if (postData !== null) {
       setCurrentPost(postData);
       setOpen(true);
+      fetchPostGroup(postData.post_id);
     } else {
       setCurrentPost(null);
       setOpen(true);
@@ -235,8 +251,6 @@ const BrowsePostsPage = () => {
           {currentPosts.map((post, index) => (
             <Row key={post.post_id}>
               <Col className="my-3">
-              {console.log(post.description)
-              }
                 <PostCard
                   profilePic={post.profile_picture || profilePic}
                   startDate={post.start_time}
@@ -280,14 +294,12 @@ const BrowsePostsPage = () => {
             </DialogTitle>
             <DialogContent sx={{ paddingTop: "2rem !important" }}>
               <h3 style={{ marginBottom: "5vh" }}>Would you like to join this post?</h3>
-              <PostCard
+              <PostCardWithAttendees
                 profilePic={currentPost.profile_picture || profilePic}
                 startDate={currentPost.start_time}
                 usersNeeded={currentPost.max_players - currentPost.num_joined}
                 usersJoined={currentPost.num_joined}
-                title={currentPost.title}
-                description={currentPost.description}
-                tags={currentPost.tags}
+                attendees={currentAttendees}
               />
               <Row style={{ marginTop: "3vh" }}>
                 <Col md={2} style={{ width: "auto" }}>

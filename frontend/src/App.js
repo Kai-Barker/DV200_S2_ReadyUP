@@ -30,6 +30,7 @@ function App() {
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/browse-posts/:gameTitle" element={<BrowsePostsPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/myposts" element={<TestPage />} />
         </Routes>

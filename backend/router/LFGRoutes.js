@@ -52,6 +52,22 @@ module.exports = function (db, cloudinary) {
       return res.status(200).json(results);
     });
   });
+  router.get("/:postid/joined-users", (req,res) => {
+    console.log(req.params);
+    
+    const postID = req.params.postid;
+    if (!postID) {
+      return res.status(400).json({message: "Invalid post id"});
+    }
+    const sql = "SELECT users.username, users.user_id, users.profile_picture FROM join_post LEFT JOIN users ON users.user_id = join_post.user_id WHERE post_id LIKE ?";
+    db.query(sql, [postID], (err,results) =>{
+      if (err) {
+        console.error("Error fetching post attendees");
+        return res.status(500).json({message: "Error fetching post attendees"});
+      }
+      return res.status(200).json(results);
+    })
+  })
   router.post("/create_category", authMiddleware, upload.single("category_picture"), async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });

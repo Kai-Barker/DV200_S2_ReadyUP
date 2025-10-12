@@ -76,6 +76,27 @@ module.exports = function (db, cloudinary) {
       res.status(500).json({ message: "An error occurred during the image upload." });
     }
   });
+  router.get("/profile/:user_id", authMiddleware, (req,res) => {
+    
+    const userID = req.params;
+    
+    const sql = "SELECT * from users WHERE users.user_id = ?";
+    db.query(sql, [userID], (err, results) => {
+      if (err){
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error fetching user profile" });
+      }
+      if (results.length === 0) {
+        console.log(`Unable to find user with ID ${userID}`);
+
+        return res.status(404).json({ message: `User not found with ID ${userID}` });
+      }
+      res.status(200).json({
+        data: results[0],
+        message: "User profile fetched successfully."
+      });
+    })
+  });
   router.get("/profile", authMiddleware, (req,res) => {
     
     const userID = req.user.id;
