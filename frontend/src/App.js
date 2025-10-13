@@ -13,6 +13,7 @@ import AdminPage from "./pages/Admin.js";
 import Footer from "./components/Footer.js";
 import Profile from './pages/UserProfile.js';
 import TestPage from "./pages/TestPage.js";
+import MyPostsPage from "./pages/MyPosts.js";
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/myposts" element={<TestPage />} />
+          <Route path="/myposts" element={<MyPostsPage />} />
         </Routes>
         <Footer />
       </Router>

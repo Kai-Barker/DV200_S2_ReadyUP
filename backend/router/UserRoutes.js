@@ -78,7 +78,9 @@ module.exports = function (db, cloudinary) {
   });
   router.get("/profile/:user_id", authMiddleware, (req,res) => {
     
-    const userID = req.params;
+    const userID = req.params.user_id;
+    console.log(userID);
+    
     
     const sql = "SELECT * from users WHERE users.user_id = ?";
     db.query(sql, [userID], (err, results) => {

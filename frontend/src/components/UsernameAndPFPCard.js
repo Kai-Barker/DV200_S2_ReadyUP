@@ -9,14 +9,14 @@ const UsernameAndPFPCard = ({ username, profilePicture, userID }) => {
     console.log(username);
   }, []);
   return (
-    <Link to={`/profile/${userID}`}>
+    <Link to={`/profile/${userID}`} style={{textDecoration:'none'}}>
       <div className="card-container cursor-target">
         <div className="pfp-container">
           <img src={profilePicture} alt="Profile" className="pfp-image" />
         </div>
 
         <div className="separator"></div>
-        <div className="username">Synergyy</div>
+        <div className="username">{username}</div>
       </div>
     </Link>
   );

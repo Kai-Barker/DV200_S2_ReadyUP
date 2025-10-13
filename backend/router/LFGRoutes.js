@@ -52,15 +52,25 @@ module.exports = function (db, cloudinary) {
       return res.status(200).json(results);
     });
   });
+  router.get("/my-posts", authMiddleware, (req,res) => {
+    const userID = req.user.id;
+    const sql = "SELECT posts.*, users.profile_picture, GROUP_CONCAT(tags.tag_name SEPARATOR ',') AS tags FROM posts LEFT JOIN join_post ON join_post.post_id = posts.post_id AND join_post.user_id = ? LEFT JOIN users ON users.user_id = posts.user_id LEFT JOIN post_tags ON post_tags.post_id = posts.post_id LEFT JOIN tags ON tags.tag_id = post_tags.tag_id WHERE join_post.user_id = ? OR posts.user_id = ? GROUP BY posts.post_id";
+    db.query(sql, [userID,userID,userID], (err,results) => {
+      if (err) {
+        console.error("Error fetching user posts");
+        return res.status(500).json({message: "Error fetching user posts"});
+      }
+      return res.status(200).json(results);
+    });
+  });
   router.get("/:postid/joined-users", (req,res) => {
-    console.log(req.params);
     
     const postID = req.params.postid;
     if (!postID) {
       return res.status(400).json({message: "Invalid post id"});
     }
-    const sql = "SELECT users.username, users.user_id, users.profile_picture FROM join_post LEFT JOIN users ON users.user_id = join_post.user_id WHERE post_id LIKE ?";
-    db.query(sql, [postID], (err,results) =>{
+    const sql = "SELECT users.username, users.user_id, users.profile_picture FROM posts LEFT JOIN users ON users.user_id = posts.user_id WHERE post_id LIKE ? UNION SELECT users.username, users.user_id, users.profile_picture FROM join_post LEFT JOIN users ON users.user_id = join_post.user_id WHERE post_id LIKE ?";
+    db.query(sql, [postID, postID], (err,results) =>{
       if (err) {
         console.error("Error fetching post attendees");
         return res.status(500).json({message: "Error fetching post attendees"});
