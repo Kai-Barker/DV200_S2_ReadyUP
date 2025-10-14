@@ -14,8 +14,18 @@ import Footer from "./components/Footer.js";
 import Profile from './pages/UserProfile.js';
 import TestPage from "./pages/TestPage.js";
 import MyPostsPage from "./pages/MyPosts.js";
+import ReactGA from 'react-ga4';
+
+const MEASUREMENT_ID = "G-KMH2BFXSFH";
 
 function App() {
+  //Google analytics
+  useEffect(() => {
+        ReactGA.initialize(MEASUREMENT_ID);
+        ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+      }, []);
+
+      
   return (
     <div className="App_bg">
       <TargetCursor 
