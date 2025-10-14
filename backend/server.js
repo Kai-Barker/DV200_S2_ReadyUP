@@ -26,8 +26,8 @@ app.use(express.json());
 
 // MySQL connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
+  host: process.env.DB_URL || "localhost",
+  user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   timezone: '+00:00',
