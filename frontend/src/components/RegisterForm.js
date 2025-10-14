@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import CheatCode from "./CheatCode";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
@@ -20,7 +20,7 @@ const LoginForm = () => {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
+      const response = await api.post("/auth/register", {
         username,
         email,
         password,
