@@ -15,6 +15,7 @@ import Profile from './pages/UserProfile.js';
 import TestPage from "./pages/TestPage.js";
 import MyPostsPage from "./pages/MyPosts.js";
 import ReactGA from 'react-ga4';
+import { useEffect } from "react";
 
 const MEASUREMENT_ID = "G-KMH2BFXSFH";
 
@@ -25,7 +26,7 @@ function App() {
         ReactGA.send({ hitType: "pageview", page: window.location.pathname });
       }, []);
 
-      
+
   return (
     <div className="App_bg">
       <TargetCursor 
