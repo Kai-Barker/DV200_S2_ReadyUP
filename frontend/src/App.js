@@ -15,7 +15,8 @@ import Profile from './pages/UserProfile.js';
 import TestPage from "./pages/TestPage.js";
 import MyPostsPage from "./pages/MyPosts.js";
 import ReactGA from 'react-ga4';
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import FriendsList from "./components/FriendsList.js";
 
 const MEASUREMENT_ID = "G-KMH2BFXSFH";
 
@@ -25,7 +26,15 @@ function App() {
         ReactGA.initialize(MEASUREMENT_ID);
         ReactGA.send({ hitType: "pageview", page: window.location.pathname });
       }, []);
+      const handleFriendsListOpen = () => {
+    setIsFriendsListOpen(true);
+  };
 
+  const handleFriendsListClose = () => {
+    setIsFriendsListOpen(false);
+  };
+
+  const [isFriendsListOpen, setIsFriendsListOpen] = useState(false);
 
   return (
     <div className="App_bg">
@@ -34,7 +43,8 @@ function App() {
         hideDefaultCursor={true}
       />
       <Router>
-        <Navbar />
+        <Navbar onOpenFriendsList={handleFriendsListOpen}/>
+        <FriendsList open={isFriendsListOpen} onClose={handleFriendsListClose} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

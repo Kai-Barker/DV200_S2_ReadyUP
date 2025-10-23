@@ -134,6 +134,7 @@ module.exports = function (db, cloudinary) {
         console.error("Database error", err);
         return res.status(500).json({ message: "Error creating post" });
       }
+      const postId = result.insertId;
       if (tags.length === 0) {
         return res.status(201).json({ message: "Post created successfully", postId: postId });
       }
@@ -150,7 +151,6 @@ module.exports = function (db, cloudinary) {
           }
         });
       }
-      const postId = result.insertId;
       let tagsProcessed = 0;
       tags.forEach((tagName) => {
         const tagCheckSql = "SELECT tag_id FROM tags WHERE tag_name = ? AND category_id = (SELECT category_id FROM category WHERE title = ? LIMIT 1)";

@@ -3,7 +3,8 @@ import axios from "axios";
 
 //Custom axios instance. pretty handy because retyping http blah blah gets annoying
 const api = axios.create({
-    baseURL: `${process.env.REACT_APP_API_URL}/api` || "http://localhost:5000/api",
+    // baseURL: `${process.env.REACT_APP_API_URL}/api` || "http://localhost:5000/api",
+    baseURL: "http://localhost:5000/api",
 });
 
 //Intercepts every request to add the JWT token for authorization and to identify the user :)

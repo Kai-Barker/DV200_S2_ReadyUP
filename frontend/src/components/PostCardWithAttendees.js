@@ -16,6 +16,8 @@ const PostCard = ({ profilePic, startDate, usersNeeded, usersJoined, attendees =
       return format(dateTime, "dd/MM");
     }
   };
+  console.log(attendees);
+  
   startDate = formatDateTime(startDateOrTime);
 
   return (

@@ -15,7 +15,7 @@ import api from "../api";
 
 
 
-const Navbar = () => {
+const Navbar = ({onOpenFriendsList}) => {
  const {user, isLoggedIn} = useAuth();
  const [profilePic, setProfilePic] = useState(null);
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ const Navbar = () => {
             {isLoggedIn ? <OutlineButtonFunction buttonLabel={"Logout"} buttonFunction={handleLogout} /> : null}
             {!isLoggedIn ? <><OutlineButton buttonLabel={"Login"} buttonLink={"/login"} /> <div style={{width:'50%'}}></div></> : (
               <>
-                <img src={FriendsIcon} onClick={handleLogout} className="cursor-target" style={{ height: "50px" }} />
+                <img src={FriendsIcon} onClick={onOpenFriendsList} className="cursor-target" style={{ height: "50px" }} />
                 <NavLink to="/profile"><img src={profilePic} className="profileIcon cursor-target" style={{maxHeight:'80%'}}/></NavLink>
               </>
 
