@@ -1,120 +1,229 @@
 
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import TextField from "@mui/material/TextField";
+  import Box from "@mui/material/Box";
+  import Drawer from "@mui/material/Drawer";
+  import List from "@mui/material/List";
+  import ListItem from "@mui/material/ListItem";
+  import ListItemButton from "@mui/material/ListItemButton";
+  import TextField from "@mui/material/TextField";
 
-// 1. Import icons as URLs to be used in <img> tags
-import friendsIconUrl from "../assets/images/FriendsIcon.png";
-import friendsRequestUrl from "../assets/images/friendRequests.svg";
+  // 1. Import icons as URLs to be used in <img> tags
+  import friendsIconUrl from "../assets/images/FriendsIcon.png";
+  import friendsRequestUrl from "../assets/images/friendRequests.svg";
 
-import UsernameAndPFPCard from "./UsernameAndPFPCard";
-// 2. Import your TabsComponent (assuming the file is ./Tabs.js)
-import TabsComponent from "./Tabs";
+  import UsernameAndPFPCard from "./UsernameAndPFPCard";
+  // 2. Import your TabsComponent (assuming the file is ./Tabs.js)
+  import TabsComponent from "./Tabs";
 
-import SearchBar from "./SearchBar";
+  import SearchBar from "./SearchBar";
+  import useDebounce from "../customHooks/searchDebounce";
+  import { useState } from "react";
+  import { useEffect } from "react";
+  import api from "../api";
 
-let attendees = [
-  {
-    username: "KERIA",
-    user_id: 2,
-    profile_picture: "https://res.cloudinary.com/dnejh9nvy/image/upload/v1759832627/v4jdid8dm9dq2yqrowyt.jpg",
-  },
-  {
-    username: "Synergyy",
-    user_id: 1,
-    profile_picture: "https://res.cloudinary.com/dnejh9nvy/image/upload/v1759940521/bz7ms5ero88vled0nzbh.webp",
-  },
-];
-
-const ImgIcon = ({ src, alt }) => (
-  <img src={src} alt={alt} style={{ height: "40px", width: "40px" }} />
-);
-
-export default function FriendsList({ open, onClose }) {
-  
-  const AddFriendPanel = (
-    <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <List>
-        {attendees.map((attendee) => (
-          <ListItem key={attendee.user_id} disablePadding>
-            <ListItemButton onClick={onClose}>
-              <UsernameAndPFPCard
-                username={attendee.username}
-                profilePicture={attendee.profile_picture}
-                userID={attendee.user_id}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-
-  const FriendRequestPanel = (
-    <Box>
-      <Box component="p" sx={{ px: 2, pt: 2, m: 0, my:2, fontSize: '1rem' }}>
-        Add Friend
-      </Box>
-      <SearchBar />
-      <Box component="p" sx={{ px: 2, pt: 2, m: 0, fontSize: '1rem' }}>
-        Friend Requests
-      </Box>
-      <List>
-        {attendees.map((attendee) => (
-          <ListItem key={attendee.user_id} disablePadding>
-            <ListItemButton onClick={onClose}>
-              <UsernameAndPFPCard
-                username={attendee.username}
-                profilePicture={attendee.profile_picture}
-                userID={attendee.user_id}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-
-
-  const tabsData = [
+  let attendees = [
     {
-      heading: <ImgIcon src={friendsIconUrl} alt="Add Friend" />, 
-      value: AddFriendPanel,
+      username: "KERIA",
+      user_id: 2,
+      profile_picture: "https://res.cloudinary.com/dnejh9nvy/image/upload/v1759832627/v4jdid8dm9dq2yqrowyt.jpg",
     },
     {
-      heading: <ImgIcon src={friendsRequestUrl} alt="Friend Requests" />, 
-      value: FriendRequestPanel, 
+      username: "Synergyy",
+      user_id: 1,
+      profile_picture: "https://res.cloudinary.com/dnejh9nvy/image/upload/v1759940521/bz7ms5ero88vled0nzbh.webp",
     },
   ];
 
-  const DrawerList = (
-    <Box sx={{ width: "20vw" }} role="presentation">
-      <TabsComponent tabValues={tabsData} defaultTab={0} />
-    </Box>
+  const ImgIcon = ({ src, alt }) => (
+    <img src={src} alt={alt} style={{ height: "40px", width: "40px" }} />
   );
 
-  return (
-    
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      sx={{
-        '& .MuiDrawer-paper': {
-          
-          boxSizing: 'border-box',
-          color: 'white',
+  export default function FriendsList({ open, onClose }) {
+    const [searchTerm, setSearchTerm] = useState("");
+      const [searchResults, setSearchResults] = useState([]);
+      const debouncedSearchTerm = useDebounce(searchTerm, 1000);
+      const [friends, setFriends] = useState([]);
+      const [friendRequests, setFriendRequests] = useState([]);
+      const RemoveFriend = async (userID) => {
+        console.log(`Removing friend ${userID}`);
+        if (!userID) {
+          return;
+        }
+        try {
+          const response = await api.post(`user/friend/remove/${userID}`);
+          console.log("Friend removed: " + response.data.message);
+          fetchAllFriends();
+        } catch (error) {
+          console.error("Unable to remove friend" + error);
+        }
+      }
 
-          backgroundColor: 'rgba(20, 22, 38, 0.85)',
-          backdropFilter: 'blur(10px)',
-          borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
-        },
-      }}
-    >
-      {DrawerList}
-    </Drawer>
-  );
-}
+      const AcceptFriendRequest = (userID) => {
+        console.log(`Accepting request from ${userID}`);
+        
+        const acceptFriend = async () => {
+          if (!userID) {
+            return;
+          }
+          try {
+            const response = await api.post(`user/accept_friend_request/${userID}`);
+            console.log("Accepted friend request" + response.data.message);
+            fetchAllFriends();
+          } catch (error) {
+            console.error("Error adding friend", error);
+          }
+        }
+        acceptFriend();
+      }
+      const AddFriend = async (userID) => {
+        console.log(`Adding friend ${userID}`);
+        if (!userID) {
+          return;
+        }
+        try {
+          const response = await api.post(`user/send_friend_request/${userID}`);
+          console.log("Friend request sent: " + response.data.message);
+        } catch (error) {
+          console.error("Failed to add friend", error);
+        }
+      }
+
+      const fetchAllFriends = async () => {
+          try {
+            const response = await api.get("user/friends");
+            setFriends(response.data.data);
+            console.log(response.data.data);
+            const requestsResponse = await api.get("user/friends/requests");
+            console.log(requestsResponse.data.data);
+            setFriendRequests(requestsResponse.data.data);
+          } catch (error) {
+            console.error("Error fetching friends:", error);
+          }
+        };
+      useEffect(() => {
+        fetchAllFriends();
+      }, []);
+      useEffect(() => {
+        const search =  async () => {
+          if (debouncedSearchTerm) {
+            try {
+              const response = await api.get(`/user/search/${debouncedSearchTerm}`);
+              setSearchResults(response.data.data);
+            } catch (error) {
+              console.error("Error fetching search results:", error);
+              setSearchResults([]);
+            }
+          }
+        }
+        search();
+      }, [debouncedSearchTerm]);
+    const FriendPanel = (
+      <Box  sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <List>
+          {friends?.map((attendee) => (
+            <ListItem key={attendee.user_id} disablePadding>
+              <ListItemButton onClick={onClose}>
+                <UsernameAndPFPCard
+                  username={attendee.username}
+                  profilePicture={attendee.profile_picture}
+                  userID={attendee.user_id}
+                  isRemove={true}
+                  onRemoveFunction={RemoveFriend}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    );
+
+
+
+    const FriendRequestPanel = (
+      <Box >
+        <Box component="p" sx={{ px: 2, pt: 2, m: 0, my:2, fontSize: '1rem' }}>
+          Add Friend
+        </Box>
+        <SearchBar searchValue={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <List className="my-5">
+          {searchResults?.map((attendee) => (
+            <ListItem key={attendee.user_id} disablePadding>
+              <ListItemButton onClick={onClose}>
+                <UsernameAndPFPCard
+                  username={attendee.username}
+                  profilePicture={attendee.profile_picture}
+                  userID={attendee.user_id}
+                  isAdd={true}
+                  onAddFunction={AddFriend}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Box component="p" sx={{ px: 2, pt: 2, m: 0, fontSize: '1rem' }}>
+          Friend Requests
+        </Box>
+        <List>
+          {friendRequests?.map((attendee) => (
+            <ListItem key={attendee.user_id} disablePadding>
+              <ListItemButton onClick={onClose}>
+                <UsernameAndPFPCard
+                  username={attendee.username}
+                  profilePicture={attendee.profile_picture}
+                  userID={attendee.user_id}
+                  isAdd={true}
+                  isRemove={true}
+                  onAddFunction={AcceptFriendRequest}
+                  onRemoveFunction={RemoveFriend}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    );
+
+
+    const tabsData = [
+      {
+        heading: <ImgIcon src={friendsIconUrl} alt="Add Friend" />, 
+        value: FriendPanel,
+      },
+      {
+        heading: <ImgIcon src={friendsRequestUrl} alt="Friend Requests" />, 
+        value: FriendRequestPanel, 
+      },
+    ];
+
+    const DrawerList = (
+      <Box sx={{ 
+        height: '100%',
+        overflowY: 'auto'
+      }} role="presentation">
+        <TabsComponent tabValues={tabsData} defaultTab={0} />
+      </Box>
+    );
+
+
+
+    return (
+      
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={onClose}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: '40vh',
+            boxSizing: 'border-box',
+            color: 'white',
+
+            backgroundColor: 'rgba(20, 22, 38, 0.85)',
+            backdropFilter: 'blur(10px)',
+            borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
+          },
+        }}
+      >
+        {DrawerList }
+      </Drawer>
+    );
+  }

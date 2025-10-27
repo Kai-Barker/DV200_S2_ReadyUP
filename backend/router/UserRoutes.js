@@ -117,8 +117,25 @@ module.exports = function (db, cloudinary) {
     });
   });
   router.post("/send_friend_request/:friend_id", authMiddleware, (req, res) => {
+
     const userID = req.user.id;
     const friendID = req.params.friend_id;
+  if (userID === friendID) {
+    return res.status(400).json({ message: "You cannot add yourself as a friend silly." });
+  }
+  const checkSql = `
+    SELECT * FROM friend
+    WHERE (user_id_one = ? AND user_id_two = ?)
+       OR (user_id_one = ? AND user_id_two = ?)
+  `;
+  db.query(checkSql, [userID, friendID, friendID, userID], (err, results) => {
+    if (err) {
+      console.error("Database error: ", err);
+      return res.status(500).json({ message: "Error checking existing friend request" });
+    }
+    if (results.length > 0) {
+      return res.status(409).json({ message: "Friend request already sent or already friends." });
+    }
     const sql = "INSERT INTO `friend` (`status`, `user_id_one`, `user_id_two`) VALUES ('pending', ?, ?)";
     db.query(sql, [userID, friendID], (err, result) => {
       if (err) {
@@ -126,6 +143,21 @@ module.exports = function (db, cloudinary) {
         return res.status(500).json({ message: "Error sending friend request" });
       }
       res.status(200).json({ message: "Friend request sent successfully" });
+    });
+  });
+});
+  router.delete("/friend/remove/:friend_id", authMiddleware, (req, res) => {
+    const userID = req.user.id;
+    const friendID = req.params.friend_id;
+    const sql = `DELETE FROM friend
+    WHERE (user_id_one = ? AND user_id_two = ?)
+    OR (user_id_one = ? AND user_id_two = ?);`;
+    db.query(sql, [userID, friendID, friendID, userID], (err, result) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error removing friend" });
+      }
+      res.status(200).json({ message: "Friend removed successfully" });
     });
   });
 
@@ -152,21 +184,53 @@ module.exports = function (db, cloudinary) {
       });
     });
   });
+  router.get("/friends/requests", authMiddleware, (req, res) => {
+    const userID = req.user.id;
+    //Gets the opposite side of the friendship
+    const sql = `SELECT users.user_id, users.profile_picture, users.username, friend.status 
+    FROM users LEFT JOIN friend ON users.user_id = friend.user_id_one
+    WHERE friend.user_id_two = ? AND friend.status = 'pending'`;
+    db.query(sql, [userID], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error fetching friends list" });
+      }
+      res.status(200).json({
+        data: results,
+        message: "Friends list fetched successfully.",
+      });
+    });
+  });
   router.post("/accept_friend_request/:friend_id", authMiddleware, (req, res) => {
     const userID = req.user.id;
     const friendID = req.params.friend_id;
     //user_id one is the sender, and two is the receiver. Only uid_two can accept
-    const sql = `UPDATE friend
-SET status = 'accepted'
-WHERE user_id_one = ?
-  AND user_id_two = ?
-  AND status = 'pending'`;
+    const sql = `UPDATE friend SET status = 'accepted' WHERE user_id_one = ? AND user_id_two = ? AND status = 'pending'`;
     db.query(sql, [friendID, userID], (err, result) => {
       if (err) {
         console.error("Database error: ", err);
         return res.status(500).json({ message: "Error accepting friend request" });
       }
       res.status(200).json({ message: "Friend request accepted successfully" });
+    });
+  });
+  router.get("/search/:username", authMiddleware, (req, res) => {
+    const searchUsername = req.params.username;
+    const userID = req.user.id;
+
+    if (!searchUsername || !userID) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+    const sql = `SELECT * FROM users WHERE username LIKE ? AND user_id != ? LIMIT 10`;
+    db.query(sql, ["%" + searchUsername + "%", userID], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error fetching searched users" });
+      }
+      res.status(200).json({
+        data: results,
+        message: "Searched users fetched successfully.",
+      });
     });
   });
 

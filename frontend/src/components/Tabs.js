@@ -12,16 +12,17 @@ function CustomTabPanel(props) {
   return (
     <div
       role="tabpanel"
+      style={{height:'100%'}}
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3, 
+      {value === index && <Box  sx={{ p: 3,
             color: '#EDE4F1', 
             fontFamily: 'Audiowide, sans-serif', 
             fontSize: '1.3rem', 
-            lineHeight: 1.6, overflowY:'auto', maxHeight:'50vh', overflowWrap:'break-word' }}>{children}</Box>}
+            lineHeight: 1.6, overflowY:'auto', maxHeight:'100%', overflowWrap:'break-word' }} >{children}</Box>}
     </div>
   );
 }
@@ -42,7 +43,7 @@ const TabsComponent = ({ tabValues, defaultTab = "0" }) => {
   }, [defaultTab]);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box className="custom-tabs" sx={{ width: "100%", height: '100%' }}>
       <Box sx={{borderBottom: " 2px solid #EDE4F1"}}>
         <Tabs
           value={value}

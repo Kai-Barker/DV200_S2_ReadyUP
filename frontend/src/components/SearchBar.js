@@ -2,7 +2,7 @@ import "../css/SearchBar.css";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
-const SearchBar = () => {
+const SearchBar = ({searchValue, onChange}) => {
   return (
     <div className="search-bar">
       <Box sx={{ display: "flex", alignItems: "flex-end", width: "100%" }}>
@@ -12,6 +12,8 @@ const SearchBar = () => {
             id="outlined-multiline-flexible"
             className="cursor-target"
             label="Search"
+            value={searchValue}
+            onChange={onChange}
             multiline
             maxRows={4}
             sx={{

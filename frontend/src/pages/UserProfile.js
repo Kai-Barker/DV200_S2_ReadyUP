@@ -60,6 +60,22 @@ const UserProfile = () => {
   const [communicationMethodLink, setCommunicationMethodLink] = useState("");
   const [readableCommunicationMethods, setReadableCommunicationMethods] = useState([{}]);
 
+
+  const AddFriend = async () => {
+    if (isOwner) {
+      return;
+    }
+    try {
+      if (userId) {
+        const response = await api.post(`/user/send_friend_request/${userId}`)
+        console.log("Friend request sent:", response.data);
+      }
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    }
+  }
+
+
   const getSocialIcon = (platform, link) => {
     const tooltipTitle = `Copy ${platform} ID`;
     switch (platform) {
@@ -204,7 +220,7 @@ const UserProfile = () => {
                 style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", border: "5px solid #EDE4F1" }}
               />
             </div>
-            <div style={{ marginTop: "10vh" }}>{isOwner && <OutlineButton buttonLabel={"Edit Profile"} buttonFunction={handleClickOpen} />}</div>
+            <div style={{ marginTop: "10vh" }}>{isOwner ? <OutlineButton buttonLabel={"Edit Profile"} buttonFunction={handleClickOpen} /> : <OutlineButton buttonLabel={"Add Friend"} buttonFunction={AddFriend} />}</div>
           </Col>
           <Col lg={{ span: 7, offset: 1 }} className="pt-2">
             {/* username and summary or friends */}
