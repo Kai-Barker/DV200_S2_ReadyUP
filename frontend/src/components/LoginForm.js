@@ -6,6 +6,7 @@ import CheatCode from "./CheatCode";
 import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
+import ReactGA from "react-ga4";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -28,6 +29,9 @@ const LoginForm = () => {
       console.log(response.data);
       console.log("Login successful");
       localStorage.setItem("token", response.data.token);
+      ReactGA.event({
+      action: "logged_in_user",
+    });
       navigate("/");
       forceRefreshPage();
     } catch (error) {

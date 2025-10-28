@@ -17,6 +17,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import useAuth from "../customHooks/auth";
 import api from "../api";
+import { toast } from "react-toastify";
+import ReactGA from "react-ga4";
 
 const dummyData = [
   {
@@ -85,8 +87,6 @@ const dummyData = [
   },
 ];
 
-
-
 const BrowsePostsPage = () => {
   const title = useParams().gameTitle;
   const [currentPage, setCurrentPage] = useState(1);
@@ -105,12 +105,12 @@ const BrowsePostsPage = () => {
 
   const handlePostJoin = async () => {
     if (currentPost.max_players - currentPost.num_joined <= 0) {
-      alert("Post is full");
+      toast.error("Post is unfortunately full");
       return;
     }
 
     if (currentPost.user_id == user.id) {
-      alert("You cant join your own post silly");
+      toast.error("You cant join your own post, silly");
       handleClose();
       return;
     }
@@ -125,25 +125,30 @@ const BrowsePostsPage = () => {
     try {
       const response = await api.post(`/lfg/posts/join`, joinData);
       console.log("Successfully joined post" + response.data);
+      toast.success("Post joined successfully!");
+      ReactGA.event({
+        action: "join_post",
+      });
       handleClose();
       fetchPosts();
     } catch (error) {
       console.error("failed to join post" + error);
+      toast.error("Failed to join post");
     }
   };
 
   const fetchPostGroup = async (postID) => {
     console.log("Fetching attendees");
-    
+
     try {
-      const response = await api.get(`/lfg/${postID}/joined-users`)
+      const response = await api.get(`/lfg/${postID}/joined-users`);
       console.log("Attendees:");
       console.log(response.data);
       setCurrentAttendees(response.data);
     } catch (error) {
       console.error("Failed to join post" + error);
     }
-  }
+  };
 
   const handleClickOpen = async (postData = null) => {
     //Doesnt work if i do postData != null for some odd fuckass reason
@@ -187,7 +192,7 @@ const BrowsePostsPage = () => {
           num_joined: post.num_joined,
           user_id: post.user_id,
           profile_picture: post.profile_picture,
-          tags: post.tags? post.tags.split(',') : [],
+          tags: post.tags ? post.tags.split(",") : [],
         };
       });
       setPosts(dataWithTags);
@@ -196,7 +201,7 @@ const BrowsePostsPage = () => {
     }
   };
 
-  const fetchTags = async() => {
+  const fetchTags = async () => {
     try {
       const response = await api.get(`/lfg/${title}/tags`);
       const data = response.data;
@@ -207,7 +212,7 @@ const BrowsePostsPage = () => {
       setError("Error fetching tags");
       setIsLoading(false);
     }
-  }
+  };
   useEffect(() => {
     fetchPosts();
     fetchTags();

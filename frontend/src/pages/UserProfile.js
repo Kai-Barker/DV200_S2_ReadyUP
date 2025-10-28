@@ -16,6 +16,8 @@ import UpdateProfileInput from "../components/UpdateProfileInput";
 import Tooltip from "@mui/material/Tooltip";
 import { useParams } from "react-router-dom";
 import useAuth from "../customHooks/auth";
+import ReactGA from "react-ga4";
+import {toast} from 'react-toastify';
 
 const availablePlatforms = ["Discord", "Steam", "Xbox", "Playstation"];
 
@@ -68,10 +70,14 @@ const UserProfile = () => {
     try {
       if (userId) {
         const response = await api.post(`/user/send_friend_request/${userId}`)
-        console.log("Friend request sent:", response.data);
+        toast.success("Friend request sent!");
+        ReactGA.event({
+        action: "send_friend_request"
+      });
       }
     } catch (error) {
       console.error("Error sending friend request:", error);
+      toast.error("Unable to send friend request");
     }
   }
 
@@ -114,7 +120,7 @@ const UserProfile = () => {
     navigator.clipboard
       .writeText(linkToCopy)
       .then(() => {
-        alert(`Copied user code to clipboard!`);
+        toast.success(`Copied user code to clipboard!`);
       })
       .catch((err) => {
         console.error("Failed to copy text: ", err);
@@ -195,8 +201,13 @@ const UserProfile = () => {
         },
       });
       console.log("Updated profile successfully", response.data);
+      toast.success("Profile updated successfully!");
+      ReactGA.event({
+        action: "update_profile"
+      });
       fetchProfileData();
     } catch (error) {
+      toast.error("Error updating profile");
       console.error("Error updating profile" + error);
     }
     handleClose();

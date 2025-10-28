@@ -17,6 +17,9 @@ import MyPostsPage from "./pages/MyPosts.js";
 import ReactGA from 'react-ga4';
 import { useState, useEffect } from "react";
 import FriendsList from "./components/FriendsList.js";
+import AnalyticsTracker from "./components/AnalyticsTracker.js";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MEASUREMENT_ID = "G-KMH2BFXSFH";
 
@@ -24,7 +27,6 @@ function App() {
   //Google analytics
   useEffect(() => {
         ReactGA.initialize(MEASUREMENT_ID);
-        ReactGA.send({ hitType: "pageview", page: window.location.pathname });
       }, []);
       const handleFriendsListOpen = () => {
     setIsFriendsListOpen(true);
@@ -43,6 +45,7 @@ function App() {
         hideDefaultCursor={true}
       />
       <Router>
+        <AnalyticsTracker />
         <Navbar onOpenFriendsList={handleFriendsListOpen}/>
         <FriendsList open={isFriendsListOpen} onClose={handleFriendsListClose} />
         <Routes>
@@ -58,6 +61,18 @@ function App() {
         </Routes>
         <Footer />
       </Router>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 }
