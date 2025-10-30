@@ -126,9 +126,7 @@ const BrowsePostsPage = () => {
       const response = await api.post(`/lfg/posts/join`, joinData);
       console.log("Successfully joined post" + response.data);
       toast.success("Post joined successfully!");
-      ReactGA.event({
-        action: "join_post",
-      });
+      ReactGA.event("join_post");
       handleClose();
       fetchPosts();
     } catch (error) {

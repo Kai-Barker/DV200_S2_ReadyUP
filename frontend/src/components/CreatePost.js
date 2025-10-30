@@ -54,11 +54,8 @@ const CreatePost = ({ refresh, setOpen, currentTags }) => {
       const response = await api.post("/lfg/post", postData);
       console.log("created post", response.data);
       toast.success("Post created successfully!");
-      ReactGA.event({
-        action: "create_post",
-        params: {
-          post_category: postData.categoryName,
-        },
+      ReactGA.event("create_post", {
+        post_category: postData.categoryName
       });
       refresh();
       setOpen(false);

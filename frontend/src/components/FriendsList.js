@@ -50,9 +50,7 @@ export default function FriendsList({ open, onClose }) {
     try {
       const response = await api.delete(`user/friend/remove/${userID}`);
       toast.success("Friend removed successfully!");
-      ReactGA.event({
-        action: "remove_friend",
-      });
+      ReactGA.event("remove_friend");
       fetchAllFriends();
     } catch (error) {
       toast.error("Unable to remove friend");
@@ -69,9 +67,7 @@ export default function FriendsList({ open, onClose }) {
       try {
         const response = await api.post(`user/accept_friend_request/${userID}`);
         console.log("Accepted friend request" + response.data.message);
-        ReactGA.event({
-          action: "accept_friend_request",
-        });
+        ReactGA.event("accept_friend_request");
         fetchAllFriends();
       } catch (error) {
         console.error("Error adding friend", error);
@@ -87,9 +83,7 @@ export default function FriendsList({ open, onClose }) {
     try {
       const response = await api.post(`user/send_friend_request/${userID}`);
       console.log("Friend request sent: " + response.data.message);
-      ReactGA.event({
-        action: "send_friend_request",
-      });
+      ReactGA.event("send_friend_request");
       toast.success("Friend request sent!");
     } catch (error) {
       console.error("Failed to add friend", error);

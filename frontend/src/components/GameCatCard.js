@@ -15,12 +15,10 @@ const GameCatCard = ({ image, title, numPosts, categoryID }) => {
             <Link
               to={`/browse-posts/${title}`}
               onClick={() => {
-                ReactGA.event({
-                  action: "selected_category",
-                  params: {
+                ReactGA.event("selected_category",{
                     post_category: title,
-                  },
-                });
+                  }
+                );
               }}
               style={{ textDecoration: "none" }}
             >

@@ -29,9 +29,7 @@ const LoginForm = () => {
       });
       console.log(response.data);
       console.log("Registration successful");
-      ReactGA.event({
-      action: "registered_user",
-      });
+      ReactGA.event("registered_user");
       navigate("/login");
     } catch (error) {
       console.error(error);

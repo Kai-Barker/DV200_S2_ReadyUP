@@ -71,9 +71,7 @@ const UserProfile = () => {
       if (userId) {
         const response = await api.post(`/user/send_friend_request/${userId}`)
         toast.success("Friend request sent!");
-        ReactGA.event({
-        action: "send_friend_request"
-      });
+        ReactGA.event("send_friend_request");
       }
     } catch (error) {
       console.error("Error sending friend request:", error);
@@ -202,9 +200,7 @@ const UserProfile = () => {
       });
       console.log("Updated profile successfully", response.data);
       toast.success("Profile updated successfully!");
-      ReactGA.event({
-        action: "update_profile"
-      });
+      ReactGA.event("updated-profile");
       fetchProfileData();
     } catch (error) {
       toast.error("Error updating profile");

@@ -29,9 +29,7 @@ const LoginForm = () => {
       console.log(response.data);
       console.log("Login successful");
       localStorage.setItem("token", response.data.token);
-      ReactGA.event({
-      action: "logged_in_user",
-    });
+      ReactGA.event("logged_in_user");
       navigate("/");
       forceRefreshPage();
     } catch (error) {
