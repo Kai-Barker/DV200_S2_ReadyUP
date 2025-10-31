@@ -19,6 +19,7 @@ import useAuth from "../customHooks/auth";
 import api from "../api";
 import { toast } from "react-toastify";
 import ReactGA from "react-ga4";
+import useDebounce from "../customHooks/searchDebounce";
 
 const dummyData = [
   {
@@ -87,21 +88,28 @@ const dummyData = [
   },
 ];
 
+const sortOptions = ["Newest", "Oldest", "Needs Players"];
+
 const BrowsePostsPage = () => {
   const title = useParams().gameTitle;
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageIndex, setPageIndex] = useState(0);
+  // const [pageIndex, setPageIndex] = useState(0);
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentTags, setCurrentTags] = useState([]);
-  const postsPerPage = 4;
   const [currentPost, setCurrentPost] = useState(null);
   const [currentAttendees, setCurrentAttendees] = useState([]);
 
   const { user, isLoggedIn } = useAuth();
 
   const [open, setOpen] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("Newest");
+  const [selectedTags, setSelectedTags] = useState([]);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const postsPerPage = 8;
 
   const handlePostJoin = async () => {
     if (currentPost.max_players - currentPost.num_joined <= 0) {
@@ -166,19 +174,48 @@ const BrowsePostsPage = () => {
     setOpen(false);
   };
 
-  const totalPages = Math.ceil(posts.length / postsPerPage);
-
   useEffect(() => {
-    setPageIndex((currentPage - 1) * postsPerPage);
-  }, [currentPage]);
+    fetchPosts();
+  }, [title, currentPage, debouncedSearchTerm, sortBy, selectedTags]);
+
+  // const totalPages = Math.ceil(posts.length / postsPerPage);
+
+  // useEffect(() => {
+  //   setPageIndex((currentPage - 1) * postsPerPage);
+  // }, [currentPage]);
 
   const fetchPosts = async () => {
+    setIsLoading(true);
+    let apiSortValue;
+    switch (sortBy) {
+      case "Oldest":
+        apiSortValue = "start_time_asc";
+        break;
+      case "Needs Players":
+        apiSortValue = "needs_players_desc";
+        break;
+      default: //newest
+        apiSortValue = "start_time_desc";
+        break;
+    }
     try {
-      const response = await api.get(`/lfg/${title}/posts`);
+      const params = new URLSearchParams();
+      params.append("page", currentPage);
+      params.append("limit", postsPerPage);
+      params.append("sort", apiSortValue);
+
+      if (debouncedSearchTerm) {
+        params.append("search", debouncedSearchTerm);
+      }
+
+      if (selectedTags.length > 0) {
+        params.append("tags", selectedTags.join(","));
+      }
+      const response = await api.get(`/lfg/${title}/posts?${params.toString()}`);
       const data = await response.data;
       console.log(data);
       //Make new object with tags as an array rather than string
-      const dataWithTags = data.map((post) => {
+      const dataWithTags = data.data.map((post) => {
         return {
           post_id: post.post_id,
           description: post.description,
@@ -194,8 +231,11 @@ const BrowsePostsPage = () => {
         };
       });
       setPosts(dataWithTags);
+      setTotalPages(Math.ceil(data.totalItems / postsPerPage));
+      setIsLoading(false);
     } catch (error) {
       setError("Error fetching posts");
+      setIsLoading(false);
     }
   };
 
@@ -212,7 +252,7 @@ const BrowsePostsPage = () => {
     }
   };
   useEffect(() => {
-    fetchPosts();
+    // fetchPosts();
     fetchTags();
   }, [title]);
 
@@ -222,7 +262,7 @@ const BrowsePostsPage = () => {
       // Fetch new data based on newPage
     }
   };
-  const currentPosts = posts.slice(pageIndex, pageIndex + postsPerPage);
+  // const currentPosts = posts.slice(pageIndex, pageIndex + postsPerPage);
   return (
     <>
       <Container className="browse-posts-container p-5" fluid>
@@ -238,20 +278,41 @@ const BrowsePostsPage = () => {
         </Row>
         <Row className="gx-3 my-4">
           <Col md={5}>
-            <TagFilterer currentTags={currentTags} />
+            <TagFilterer
+              currentTags={currentTags}
+              selected={selectedTags}
+              onChange={(newTags) => {
+                setSelectedTags(newTags);
+                setCurrentPage(1); // Reset page on filter
+              }}
+            />
           </Col>
           <Col md={3}>
-            <SortByDropdown />
+            <SortByDropdown
+              label={"Sort By"}
+              options={sortOptions}
+              setFunction={(newValue) => {
+                setSortBy(newValue);
+                setCurrentPage(1); // Reset to page 1 on sort to avoid going over the limit of available categories when filtering
+              }}
+              value={sortBy}
+            />
           </Col>
-          <Col md={4}>
-            <SearchBar />
+          <Col md={3}>
+            <SearchBar
+              searchValue={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1); // Reset to page 1 on search for same reason as dropdown
+              }}
+            />
           </Col>
           {/* <Col md={2}>
           <OutlineButton buttonLabel={"Create Post"} buttonFunction={() => {}} />
         </Col> */}
         </Row>
         <Row>
-          {currentPosts.map((post, index) => (
+          {posts.map((post, index) => (
             <Row key={post.post_id}>
               <Col className="my-3">
                 <PostCard

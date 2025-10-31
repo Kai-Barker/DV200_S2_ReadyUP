@@ -7,6 +7,7 @@ import dummyImg from "../assets/images/FN PlaceHolder.png";
 import PaginationControls from "../components/PaginationControls";
 import { useState, useEffect } from "react";
 import api from "../api";
+import useDebounce from "../customHooks/searchDebounce";
 
 // const categories = [
 //   {
@@ -56,26 +57,74 @@ import api from "../api";
 //   },
 // ];
 
+const sortOptions = [
+  "Most Posts",
+  "Fewest Posts",
+  "Alphabetical (A-Z)",
+  "Alphabetical (Z-A)",
+];
+
+
 const CategoriesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageIndex, setPageIndex] = useState(0);
   const [categories, setCategories] = useState([]);
+  const [totalPages, setTotalPages] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("Most Posts");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const categoriesPerPage = 8;
 
-  const totalPages = categories ? Math.ceil(categories.length / categoriesPerPage) : 0;
+  // const totalPages = categories ? Math.ceil(categories.length / categoriesPerPage) : 0;
 
-  useEffect(() => {
-    setPageIndex((currentPage - 1) * categoriesPerPage);
-  }, [currentPage]);
+  // useEffect(() => {
+  //   setPageIndex((currentPage - 1) * categoriesPerPage);
+  // }, [currentPage]);
+
+  // { label: "Most Posts", value: "num_posts_desc" },
+  // { label: "Fewest Posts", value: "num_posts_asc" },
+  // { label: "Alphabetical (A-Z)", value: "title_asc" },
+  // { label: "Alphabetical (Z-A)", value: "title_desc" },
+
+  const onSortChange = (sortState) => {
+    
+  }
 
   useEffect(() => {
     const fetchCategories = async() => {
+      setIsLoading(true);
       try {
-        const response = await api.get('/lfg');
+        let sortValue = ''
+        switch (sortBy) {
+      case "Most Posts":
+        sortValue = "num_posts_desc";
+        break;
+      case "Fewest Posts":
+        sortValue = "num_posts_asc";
+        break;
+      case "Alphabetical (A-Z)":
+        sortValue = "title_asc";
+        break;
+      case "Alphabetical (Z-A)":
+        sortValue = "title_desc";
+        break;
+      default:
+        sortValue = "num_posts_desc";
+        break;
+    }
+        const params = new URLSearchParams();
+        params.append('page', currentPage);
+        params.append('limit', categoriesPerPage);
+        params.append('sort', sortValue);
+        if (debouncedSearchTerm) {
+          params.append('search', debouncedSearchTerm);
+        }
+        const response = await api.get(`/lfg?${params.toString()}`);
         const data = await response.data;
-        setCategories(data);
+        setCategories(data.data);
+        setTotalPages(Math.ceil(data.totalItems / categoriesPerPage));
         console.log(data);
         
         setIsLoading(false);
@@ -85,7 +134,7 @@ const CategoriesPage = () => {
       }
     };
     fetchCategories();
-  }, []);
+  }, [debouncedSearchTerm, sortBy, currentPage]);
 
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -93,7 +142,7 @@ const CategoriesPage = () => {
       // Fetch new data based on newPage
     }
   }
-  const currentCategories = categories ? categories.slice(pageIndex, pageIndex + categoriesPerPage) : [];
+  // const currentCategories = categories ? categories.slice(pageIndex, pageIndex + categoriesPerPage) : [];
   return (
     <div className="categories-page">
       <Container fluid className="px-5 py-4">
@@ -102,14 +151,20 @@ const CategoriesPage = () => {
             <h1 className="categories-page-heading">Select A Game</h1>
           </Col>
           <Col md={3}>
-            <SortByDropdown />
+            <SortByDropdown label={"Sort By"} options={sortOptions} setFunction={(newValue) => {
+              setSortBy(newValue);
+              setCurrentPage(1); // Reset to page 1 on sort to avoid going over the limit of available categories when filtering
+            }} value={sortBy} />
           </Col>
           <Col md={3}>
-            <SearchBar />
+            <SearchBar searchValue={searchTerm} onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to page 1 on search for same reason as dropdown
+            }}/>
           </Col>
         </Row>
         <Row className="gx-5 gy-5 my-1">
-          {currentCategories.map((game, index) => (
+          {categories.map((game, index) => (
             <Col key={index} md={3}>
               <GameCatCard
                 image={game.category_picture}

@@ -8,14 +8,64 @@ const upload = multer({ storage: storage });
 
 module.exports = function (db, cloudinary) {
   router.get("/", (req, res) => {
-    const sql =
-      "SELECT category.*, COUNT(posts.post_id) AS num_posts  FROM category LEFT JOIN posts ON category.category_id=posts.category_id GROUP BY category.title";
-    db.query(sql, (err, results) => {
-      if (err) {
-        console.error("Error fetching categories: ", err);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const search = req.query.search || "";
+    const sort = req.query.sort || "num_posts_desc";
+    const offset = (page - 1) * limit;
+    let dataSql = "SELECT category.*, COUNT(posts.post_id) AS num_posts  FROM category LEFT JOIN posts ON category.category_id=posts.category_id";
+    let countSql = `SELECT COUNT(category.category_id) as totalItems FROM category`;
+    const queryParams = [];
+    const countParams = [];
+
+    //SEARCH
+    if (search) {
+      const searchClause = ` WHERE category.title LIKE ?`;
+      dataSql += searchClause;
+      countSql += searchClause;
+      queryParams.push(`%${search}%`);
+      countParams.push(`%${search}%`);
+    }
+    dataSql += ` GROUP BY category.category_id`;
+
+    //SORT
+    switch (sort) {
+      case "num_posts_asc":
+        dataSql += ` ORDER BY num_posts ASC`;
+        break;
+      case "title_asc":
+        dataSql += ` ORDER BY category.title ASC`;
+        break;
+      case "title_desc":
+        dataSql += ` ORDER BY category.title DESC`;
+        break;
+      default: // "num_posts_desc"
+        dataSql += ` ORDER BY num_posts DESC`;
+    }
+
+    //PAGINATION
+    dataSql += ` LIMIT ? OFFSET ?`;
+    queryParams.push(limit, offset);
+
+    //Counter query
+    db.query(countSql, countParams, (countErr, countResult) => {
+      if (countErr) {
+        console.error("Error fetching categories: ", countErr);
         return res.status(500).json({ message: "Error fetching categories" });
       }
-      return res.status(200).json(results);
+      const totalItems = countResult[0].totalItems;
+
+      //Data query
+      db.query(dataSql, queryParams, (dataErr, dataResult) => {
+        if (dataErr) {
+          console.error("Error Fetching Categories, " + dataErr);
+          return res.status(500).json({ message: "Error fetching category data" });
+        }
+        res.status(200).json({
+          data: dataResult,
+          totalItems: totalItems,
+        });
+      });
     });
   });
   router.get("/top_posts", (req, res) => {
@@ -38,46 +88,132 @@ module.exports = function (db, cloudinary) {
         return res.status(500).json({ message: "Error fetching tags for category" });
       }
       return res.status(200).json(results);
-    })
-  })
-  router.get("/:title/posts", (req, res) => {
-    const title = req.params.title;
-    const sql =
-      "SELECT posts.*, users.profile_picture, users.user_id, GROUP_CONCAT(tags.tag_name SEPARATOR ',') AS tags FROM posts LEFT JOIN category ON category.category_id = posts.category_id LEFT JOIN users ON posts.user_id = users.user_id LEFT JOIN post_tags ON post_tags.post_id = posts.post_id LEFT JOIN tags ON tags.tag_id = post_tags.tag_id WHERE category.title = ? AND posts.num_joined != posts.max_players GROUP BY posts.post_id";
-    db.query(sql, [title], (err, results) => {
-      if (err) {
-        console.error("Error fetching posts for category: ", err);
-        return res.status(500).json({ message: "Error fetching posts for category" });
-      }
-      return res.status(200).json(results);
     });
   });
-  router.get("/my-posts", authMiddleware, (req,res) => {
+  router.get("/:title/posts", (req, res) => {
+    const categoryTitle = req.params.title;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4; // Your frontend uses 4
+    const search = req.query.search || "";
+    const sort = req.query.sort || "start_time_desc";
+    const tags = req.query.tags ? req.query.tags.split(",") : [];
+    const offset = (page - 1) * limit;
+
+    let dataSql = `SELECT DISTINCT
+          posts.*, 
+          users.profile_picture, 
+          users.user_id, 
+          GROUP_CONCAT(tags.tag_name SEPARATOR ',') AS tags
+        FROM posts
+        LEFT JOIN category ON category.category_id = posts.category_id
+        LEFT JOIN users ON posts.user_id = users.user_id
+        LEFT JOIN post_tags ON post_tags.post_id = posts.post_id
+        LEFT JOIN tags ON tags.tag_id = post_tags.tag_id`;
+    let countSql = `
+        SELECT COUNT(DISTINCT posts.post_id) as totalItems
+        FROM posts
+        LEFT JOIN category ON category.category_id = posts.category_id
+        LEFT JOIN users ON posts.user_id = users.user_id
+        LEFT JOIN post_tags ON post_tags.post_id = posts.post_id
+        LEFT JOIN tags ON tags.tag_id = post_tags.tag_id
+      `;
+
+    let whereClause = ` WHERE category.title = ? AND posts.num_joined != posts.max_players`;
+    let queryParams = [categoryTitle];
+    let countParams = [categoryTitle];
+
+    if (search) {
+      whereClause += ` AND posts.title LIKE ?`;
+      queryParams.push(`%${search}%`);
+      countParams.push(`%${search}%`);
+    }
+    if (tags.length > 0) {
+      whereClause += ` AND posts.post_id IN (
+          SELECT post_id FROM post_tags
+          JOIN tags ON post_tags.tag_id = tags.tag_id
+          WHERE tags.tag_name IN (?)
+          GROUP BY post_id
+          HAVING COUNT(DISTINCT tags.tag_name) = ?
+        )`;
+      queryParams.push(tags, tags.length);
+      countParams.push(tags, tags.length);
+    }
+    dataSql += whereClause;
+    countSql += whereClause;
+
+    dataSql += ` GROUP BY posts.post_id`;
+
+    switch (sort) {
+      case "start_time_asc":
+        dataSql += ` ORDER BY posts.start_time ASC`;
+        break;
+      case "needs_players_desc":
+        dataSql += ` ORDER BY (posts.max_players - posts.num_joined) DESC`;
+        break;
+      default: // "start_time_desc"
+        dataSql += ` ORDER BY posts.start_time DESC`;
+    }
+    dataSql += ` LIMIT ? OFFSET ?`;
+    queryParams.push(limit, offset);
+
+    // const sql =
+    //   "SELECT posts.*, users.profile_picture, users.user_id, GROUP_CONCAT(tags.tag_name SEPARATOR ',') AS tags FROM posts LEFT JOIN category ON category.category_id = posts.category_id LEFT JOIN users ON posts.user_id = users.user_id LEFT JOIN post_tags ON post_tags.post_id = posts.post_id LEFT JOIN tags ON tags.tag_id = post_tags.tag_id WHERE category.title = ? AND posts.num_joined != posts.max_players GROUP BY posts.post_id";
+    db.query(countSql, countParams, (countErr, countResult) => {
+      if (countErr) {
+        console.error("Error fetching post count: ", countErr);
+        return res.status(500).json({ message: "Error fetching post count" });
+      }
+
+      const totalItems = countResult[0].totalItems;
+
+      db.query(dataSql, queryParams, (dataErr, dataResults) => {
+        if (dataErr) {
+          console.error("Error fetching posts: ", dataErr);
+          return res.status(500).json({ message: "Error fetching posts" });
+        }
+
+        // 8. Send the final response
+        res.status(200).json({
+          data: dataResults,
+          totalItems: totalItems,
+        });
+      });
+    });
+    // db.query(sql, [categoryTitle], (err, results) => {
+    //   if (err) {
+    //     console.error("Error fetching posts for category: ", err);
+    //     return res.status(500).json({ message: "Error fetching posts for category" });
+    //   }
+    //   return res.status(200).json(results);
+    // });
+  });
+  router.get("/my-posts", authMiddleware, (req, res) => {
     const userID = req.user.id;
-    const sql = "SELECT posts.*, users.profile_picture, GROUP_CONCAT(tags.tag_name SEPARATOR ',') AS tags FROM posts LEFT JOIN join_post ON join_post.post_id = posts.post_id AND join_post.user_id = ? LEFT JOIN users ON users.user_id = posts.user_id LEFT JOIN post_tags ON post_tags.post_id = posts.post_id LEFT JOIN tags ON tags.tag_id = post_tags.tag_id WHERE join_post.user_id = ? OR posts.user_id = ? GROUP BY posts.post_id";
-    db.query(sql, [userID,userID,userID], (err,results) => {
+    const sql =
+      "SELECT posts.*, users.profile_picture, GROUP_CONCAT(tags.tag_name SEPARATOR ',') AS tags FROM posts LEFT JOIN join_post ON join_post.post_id = posts.post_id AND join_post.user_id = ? LEFT JOIN users ON users.user_id = posts.user_id LEFT JOIN post_tags ON post_tags.post_id = posts.post_id LEFT JOIN tags ON tags.tag_id = post_tags.tag_id WHERE join_post.user_id = ? OR posts.user_id = ? GROUP BY posts.post_id";
+    db.query(sql, [userID, userID, userID], (err, results) => {
       if (err) {
         console.error("Error fetching user posts");
-        return res.status(500).json({message: "Error fetching user posts"});
+        return res.status(500).json({ message: "Error fetching user posts" });
       }
       return res.status(200).json(results);
     });
   });
-  router.get("/:postid/joined-users", (req,res) => {
-    
+  router.get("/:postid/joined-users", (req, res) => {
     const postID = req.params.postid;
     if (!postID) {
-      return res.status(400).json({message: "Invalid post id"});
+      return res.status(400).json({ message: "Invalid post id" });
     }
-    const sql = "SELECT users.username, users.user_id, users.profile_picture FROM posts LEFT JOIN users ON users.user_id = posts.user_id WHERE post_id LIKE ? UNION SELECT users.username, users.user_id, users.profile_picture FROM join_post LEFT JOIN users ON users.user_id = join_post.user_id WHERE post_id LIKE ?";
-    db.query(sql, [postID, postID], (err,results) =>{
+    const sql =
+      "SELECT users.username, users.user_id, users.profile_picture FROM posts LEFT JOIN users ON users.user_id = posts.user_id WHERE post_id LIKE ? UNION SELECT users.username, users.user_id, users.profile_picture FROM join_post LEFT JOIN users ON users.user_id = join_post.user_id WHERE post_id LIKE ?";
+    db.query(sql, [postID, postID], (err, results) => {
       if (err) {
         console.error("Error fetching post attendees");
-        return res.status(500).json({message: "Error fetching post attendees"});
+        return res.status(500).json({ message: "Error fetching post attendees" });
       }
       return res.status(200).json(results);
-    })
-  })
+    });
+  });
   router.post("/create_category", authMiddleware, upload.single("category_picture"), async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
@@ -220,7 +356,6 @@ module.exports = function (db, cloudinary) {
       });
     });
   });
- 
 
   return router;
 };
