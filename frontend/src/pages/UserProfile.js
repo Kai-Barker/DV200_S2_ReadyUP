@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import useAuth from "../customHooks/auth";
 import ReactGA from "react-ga4";
 import {toast} from 'react-toastify';
+import useSeoPageInfo from "../customHooks/useSeoPageInfo";
 
 const availablePlatforms = ["Discord", "Steam", "Xbox", "Playstation"];
 
@@ -44,6 +45,8 @@ const UserProfile = () => {
   const [open, setOpen] = useState(false);
   const { userId } = useParams();
   const { user } = useAuth();
+
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -208,13 +211,28 @@ const UserProfile = () => {
     }
     handleClose();
   };
+  const isOwner = user && profileData && user.id === profileData.user_id;
+  
+  let seoTitle='';
+  let seoDescription='';
+  if (!isOwner) {
+    seoTitle= `${profileData?.username}'s Profile | ReadyUP`;
+    seoDescription = `View ${profileData?.username}'s profile and LFG posts on ReadyUP. ${profileData?.Bio || ''}`
+  }
+  else{
+    seoTitle = "My Profile | ReadyUP";
+    seoDescription = "View and edit your personal ReadyUP profile.";
+  }
+  useSeoPageInfo({
+      title: seoTitle,
+      description: seoDescription
+    })
   if (isLoading) {
     return <p>Loading profile...</p>;
   }
   if (!profileData) {
     return <p>Could not load profile.</p>;
   }
-  const isOwner = user && profileData && user.id === profileData.user_id;
   return (
     <div style={{ height: "80vh" }}>
       <Container fluid className="px-5 py-5">
@@ -225,6 +243,7 @@ const UserProfile = () => {
               <img
                 src={profileData?.profile_picture}
                 style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", border: "5px solid #EDE4F1" }}
+                alt={`${profileData?.username}'s profile picture`}
               />
             </div>
             <div style={{ marginTop: "10vh" }}>{isOwner ? <OutlineButton buttonLabel={"Edit Profile"} buttonFunction={handleClickOpen} /> : <OutlineButton buttonLabel={"Add Friend"} buttonFunction={AddFriend} />}</div>
@@ -277,6 +296,7 @@ const UserProfile = () => {
                   <img
                     src={editProfilePicture instanceof File ? URL.createObjectURL(editProfilePicture) : editProfilePicture || profileData?.profile_picture}
                     style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%", border: "5px solid #EDE4F1" }}
+                    alt={`Currently input profile picture for ${profileData?.username}`}
                   />
                 </div>
               </Col>

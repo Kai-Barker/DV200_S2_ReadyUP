@@ -4,7 +4,7 @@ import SortByDropdown from "../components/SortByDropdown";
 import SearchBar from "../components/SearchBar";
 import TagFilterer from "../components/TagFilterer";
 import PostCard from "../components/PostCard";
-import profilePic from "../assets/images/towelahri.jpg";
+import profilePic from "../assets/images/BasePFP.png";
 import PaginationControls from "../components/PaginationControls";
 import { useState, useEffect } from "react";
 import PostCardWithAttendees from "../components/PostCardWithAttendees";
@@ -20,6 +20,7 @@ import api from "../api";
 import { toast } from "react-toastify";
 import ReactGA from "react-ga4";
 import useDebounce from "../customHooks/searchDebounce";
+import useSeoPageInfo from "../customHooks/useSeoPageInfo";
 
 const dummyData = [
   {
@@ -91,6 +92,9 @@ const dummyData = [
 const sortOptions = ["Newest", "Oldest", "Needs Players"];
 
 const BrowsePostsPage = () => {
+
+  
+
   const title = useParams().gameTitle;
   const [currentPage, setCurrentPage] = useState(1);
   // const [pageIndex, setPageIndex] = useState(0);
@@ -102,6 +106,11 @@ const BrowsePostsPage = () => {
   const [currentAttendees, setCurrentAttendees] = useState([]);
 
   const { user, isLoggedIn } = useAuth();
+  useEffect(() => {
+    console.log(user);
+    console.log(isLoggedIn);
+    
+  }, [user]);
 
   const [open, setOpen] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -110,6 +119,11 @@ const BrowsePostsPage = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const postsPerPage = 8;
+
+  useSeoPageInfo({
+    title:`Find ${title} Groups (LFG) | ReadyUP`,
+    description:`Find active LFG posts for ${title}. Join groups and find teammates to play ${title} today.`
+});
 
   const handlePostJoin = async () => {
     if (currentPost.max_players - currentPost.num_joined <= 0) {

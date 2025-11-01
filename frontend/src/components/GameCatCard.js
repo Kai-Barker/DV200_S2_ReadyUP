@@ -9,7 +9,7 @@ const GameCatCard = ({ image, title, numPosts, categoryID }) => {
       <Container>
         <Row>
           <Col className="game-cat-card" style={{ padding: "0" }}>
-            <img src={image} alt={title} style={{ margin: "none", maxHeight: "50vh", height: "50vh", objectFit: "cover" }} />
+            <img src={image} alt={title + " LFG Category"} style={{ margin: "none", maxHeight: "50vh", height: "50vh", objectFit: "cover" }} />
             <h5 className="game-cat-card-title">{title}</h5>
             <p className="game-cat-card-posts">{numPosts || "0"} Posts looking for a group</p>
             <Link

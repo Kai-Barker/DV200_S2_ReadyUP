@@ -15,7 +15,7 @@ const UsernameAndPFPCard = ({ username, profilePicture, userID, isAdd = false, i
       <Link to={`/profile/${userID}`} className="card-link">
         <div className="card-container cursor-target">
           <div className="pfp-container">
-            <img src={profilePicture} alt="Profile" className="pfp-image" />
+            <img src={profilePicture} alt={`${username}'s profile photo`} className="pfp-image" />
           </div>
           <div className="separator"></div>
           <div className="username">{username}</div>

@@ -233,19 +233,10 @@ const BrowsePostsPage = () => {
             </Col>
           )} */}
         </Row>
-        <Row className="gx-3 my-4">
-          <Col md={5}>
-            <TagFilterer currentTags={currentTags} />
+        <Row>
+          <Col md={12} style={{ textAlign: "centre", marginBottom:'3vh' }}>
+            <h1 className="categories-page-heading">Posts you are part of</h1>
           </Col>
-          <Col md={3}>
-            <SortByDropdown />
-          </Col>
-          <Col md={4}>
-            <SearchBar />
-          </Col>
-          {/* <Col md={2}>
-          <OutlineButton buttonLabel={"Create Post"} buttonFunction={() => {}} />
-        </Col> */}
         </Row>
         <Row>
           {currentPosts.map((post, index) => (

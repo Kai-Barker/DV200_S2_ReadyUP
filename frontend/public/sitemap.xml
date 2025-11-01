@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://readyuplfg.co.za/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/categories</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/login</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/register</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/Fortnite</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/Valorant</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/Marvel%20Rivals</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/League%20of%20Legends</loc>
+    <priority>0.7</priority>
+  </url>
+  
+
+</urlset>

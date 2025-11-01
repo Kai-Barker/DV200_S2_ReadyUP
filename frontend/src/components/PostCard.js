@@ -45,6 +45,7 @@ const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, descr
                     border: "5px solid #EDE4F1",
                     aspectRatio: "1 / 1",
                   }}
+                  alt="Profile picture of the user who posted the post"
                 />
               </div>
             </Col>

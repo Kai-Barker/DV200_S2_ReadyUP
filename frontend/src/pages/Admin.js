@@ -4,6 +4,9 @@ import dummyImg from "../assets/images/FN PlaceHolder.png";
 import { Container, Row, Col } from "react-bootstrap";
 import PostAdmin from "../components/ReportedPost";
 import AddCategoryInputs from "../components/AddCategoryInputs";
+import useAuth from "../customHooks/auth";
+import { useEffect } from "react";
+
 
 const dummyData = {
   image: dummyImg,
@@ -18,6 +21,16 @@ const dummyPost = {
 }
 
 const Admin = () => {
+  const { user, isLoggedIn } = useAuth();
+  useEffect(() => {
+    console.log(user);
+    console.log(isLoggedIn);
+    
+  }, [user]);
+
+  if (user?.role !== 'admin') {
+    return (<div className="admin-heading" style={{height:'80vh', fontSize:'5rem'}}><p>Why are you here? ╰（‵□′）╯</p></div>);
+  }
   return (
     <div className="admin-page">
       <h1 className="admin-heading">Reported Categories</h1>

@@ -8,6 +8,7 @@ import PaginationControls from "../components/PaginationControls";
 import { useState, useEffect } from "react";
 import api from "../api";
 import useDebounce from "../customHooks/searchDebounce";
+import useSeoPageInfo from "../customHooks/useSeoPageInfo";
 
 // const categories = [
 //   {
@@ -66,6 +67,12 @@ const sortOptions = [
 
 
 const CategoriesPage = () => {
+
+  useSeoPageInfo({
+    title: "Browse All Game Categories | ReadyUP",
+    description: "Find LFG groups for games like Fortnite, Valorant, League of Legends, and more. See all available LFG categories on ReadyUP."
+});
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageIndex, setPageIndex] = useState(0);
   const [categories, setCategories] = useState([]);

@@ -7,6 +7,7 @@ import HeroSection from "../components/HeroSection";
 import "../css/Home.css";
 import api from "../api";
 import {useState, useEffect} from "react";
+import useSeoPageInfo from "../customHooks/useSeoPageInfo";
 
 
 const dummyData = {
@@ -19,6 +20,11 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+
+  useSeoPageInfo({
+    title: "ReadyUP | Find Your Next Gaming Teammates (LFG)",
+    description: "Stop playing solo and find your group. ReadyUP helps you find teammates and LFG groups for your favorite games so randoms will stop throwing. Browse posts for Valorant, Apex Legends, & more and build your squad"
+});
 
   useEffect(() => {
     const fetchCategories = async() => {
