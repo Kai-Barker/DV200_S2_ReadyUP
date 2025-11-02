@@ -26,6 +26,7 @@
 }
 
 .hero-button {
+  display: block;
   border: 2px solid #ddfff7;
   color: #171123;
   -webkit-text-stroke: 0.5px;
@@ -57,4 +58,38 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.hero-button-mobile{
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  .hero-button{
+    display: none;
+  }
+  .hero-button-mobile{
+    display: block;
+    margin-top: 5vh;
+  }
+  .hero-content {
+    align-items: center;
+    padding: 0 0.5rem;    
+  }
+  .hero-section{
+    max-height: 70vh;
+  }
+
+  .hero-heading-one {
+    font-size: 3rem;  
+    margin-left: 0; 
+    text-align: center; 
+    margin-top: 5vh;
+  }
+
+  .hero-heading-two {
+    font-size: 1.5rem;
+    margin-left: 0; 
+    text-align: center;
+    margin-top: 5vh;
+  }
 }

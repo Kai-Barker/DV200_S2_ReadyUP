@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import ReactGA from "react-ga4";
 import useDebounce from "../customHooks/searchDebounce";
 import useSeoPageInfo from "../customHooks/useSeoPageInfo";
+import "../css/BrowsePosts.css";
 
 const dummyData = [
   {
@@ -280,9 +281,9 @@ const BrowsePostsPage = () => {
   return (
     <>
       <Container className="browse-posts-container p-5" fluid>
-        <Row>
-          <Col md={6}>
-            <h1 style={{ fontSize: "2.8rem", color: "#EDE4F1" }}>{title}</h1>
+        <Row className="gy-4 browse-posts-heading-container">
+          <Col md={6} className="browse-posts-game-title">
+            <h1 >{title}</h1>
           </Col>
           {isLoggedIn && (
             <Col md={{ span: 2, offset: 4 }}>
@@ -290,7 +291,7 @@ const BrowsePostsPage = () => {
             </Col>
           )}
         </Row>
-        <Row className="gx-3 my-4">
+        <Row className="gx-3 gy-4 my-4">
           <Col md={5}>
             <TagFilterer
               currentTags={currentTags}
@@ -312,7 +313,7 @@ const BrowsePostsPage = () => {
               value={sortBy}
             />
           </Col>
-          <Col md={3}>
+          <Col md={4}>
             <SearchBar
               searchValue={searchTerm}
               onChange={(e) => {

@@ -22,8 +22,8 @@ body {
   margin: 0.5rem;
   white-space: nowrap; /* force one line */
   overflow: hidden; /* hide overflow */
-  text-overflow: ellipsis; /* "..." if too long */
-  font-size: clamp(0.8rem, 2vw, 1.5rem); /* responsive sizing */
+  text-overflow: ellipsis; /* ... if too long */
+  font-size: clamp(1.5rem, 2vw, 1.8rem); /* responsive sizing */
 }
 
 .game-cat-card-posts {

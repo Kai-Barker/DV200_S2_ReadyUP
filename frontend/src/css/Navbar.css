@@ -2,24 +2,53 @@
   font-family: "Audiowide", sans-serif;
   text-decoration: none;
   font-size: 20px;
-  color: #EDE4F1;
+  color: #ede4f1;
 }
-
+.nav-logo {
+  max-width: 150px;
+  width: 100%;
+}
+.navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(237, 228, 241, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+.navbar-toggler {
+  border-color: #ede4f1;
+}
 .profileIcon {
   width: 10vh;
   height: 10vh;
+  aspect-ratio: 1/1;
   object-fit: cover;
   object-position: center;
   border-radius: 50%;
-  border: 5px solid #EDE4F1;
+  border: 5px solid #ede4f1;
 }
 
-.navContainer {
-  background-color: #171123;
-}
-
-.nav-links.active{
-  color: #73EEDC;
+.nav-links.active {
+  color: #73eedc;
   text-decoration: underline;
   text-underline-offset: 8px;
+}
+/* check for mobile */
+@media (max-width: 991.98px) {
+  
+  .nav-logo {
+    max-width: 120px; 
+  }
+  
+
+  /* This fixes the stacking of your <Col> components */
+  .navbar-collapse .d-flex {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2vh !important; /* Adds spacing between items */
+    padding: 20px 0; /* Adds space at the top/bottom */
+  }
+
+  /* Shrinks the profile icon a bit more on mobile
+  .profileIcon {
+    width: 60px;
+    height: 60px;
+  } */
 }

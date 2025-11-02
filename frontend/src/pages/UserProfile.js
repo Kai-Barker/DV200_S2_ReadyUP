@@ -234,7 +234,7 @@ const UserProfile = () => {
     return <p>Could not load profile.</p>;
   }
   return (
-    <div style={{ height: "80vh" }}>
+    <div style={{ minHeight: "90vh" }}>
       <Container fluid className="px-5 py-5">
         <Row>
           <Col lg={3}>

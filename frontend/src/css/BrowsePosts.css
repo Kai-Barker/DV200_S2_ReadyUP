@@ -1,0 +1,13 @@
+.browse-posts-game-title{
+    font-size: 2.8rem;
+    color: #EDE4F1;
+}
+
+@media (max-width: 991.98px) {
+    .browse-posts-game-title{
+        text-align: center;
+    }
+    .browse-posts-heading-container{
+        margin-bottom: 0vh;
+    }
+}

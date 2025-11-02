@@ -55,3 +55,12 @@
   border-right: none;
   border-top: none;
 }
+
+@media (max-width: 991.98px) {
+  .target-cursor-corner{
+    display: none;
+  }
+  .target-cursor-dot{
+    display: none;
+  }
+}

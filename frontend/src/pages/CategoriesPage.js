@@ -153,7 +153,7 @@ const CategoriesPage = () => {
   return (
     <div className="categories-page">
       <Container fluid className="px-5 py-4">
-        <Row>
+        <Row className="gy-4">
           <Col md={6} style={{ textAlign: "left" }}>
             <h1 className="categories-page-heading">Select A Game</h1>
           </Col>

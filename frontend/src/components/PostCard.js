@@ -24,7 +24,7 @@ const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, descr
   return (
     <Container className="cardBorder cursor-target" style={{color:"#EDE4F1"}} onClick={onCardClick}>
       <Row>
-        <Col lg={3} style={{borderRight:'5px solid #EDE4F1'}}>
+        <Col lg={3} className="post-card-breaker">
           {/* pfp */}
           <Row className="my-4">
             <Col style={{ justifyContent: "center", display: "flex" }}>
@@ -82,8 +82,8 @@ const PostCard = ({profilePic, startDate, usersNeeded, usersJoined, title, descr
             </Col>
           </Row>
         </Col>
-        <Col lg={{span:4, offset:1}} className="my-4">
-          <h2 className="my-2">{title}</h2>
+        <Col lg={{span:4, offset:1}} className="my-4 post-card-text">
+          <h2 className="my-4">{title}</h2>
           <p style={{ fontSize: "20px" }}>{description}</p>
         </Col>
         <Col lg={{span:3, offset:1}}  className="d-flex flex-wrap gap-3 my-4" style={{ alignItems: "flex-start", alignContent: 'flex-start' }}>

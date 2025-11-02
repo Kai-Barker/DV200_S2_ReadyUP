@@ -1,10 +1,33 @@
-.cardBorder{
-    border: 4px solid #EDE4F1;
-    border-radius: 20px;
+.cardBorder {
+  border: 4px solid #ede4f1;
+  border-radius: 20px;
 }
 
-.post-card-align-text{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.post-card-breaker {
+  border-right: 5px solid #ede4f1;
+}
+
+.post-card-align-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h2 {
+  white-space: nowrap; /* force one line */
+  overflow: hidden; /* hide overflow */
+  text-overflow: ellipsis; /* ... if too long */
+}
+p{
+  overflow: hidden; /* hide overflow */
+  text-overflow: ellipsis; /* ... if too long */
+}
+
+@media (max-width: 991.98px) {
+  .post-card-breaker {
+    border-right: none;
+  }
+  .post-card-text {
+    text-align: center;
+  }
 }

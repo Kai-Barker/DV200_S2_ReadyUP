@@ -23,7 +23,7 @@ const PostCard = ({ profilePic, startDate, usersNeeded, usersJoined, attendees =
   return (
     <Container className="cardBorder" style={{ color: "#EDE4F1" }} onClick={onCardClick}>
       <Row>
-        <Col lg={3} style={{ borderRight: "5px solid #EDE4F1" }}>
+        <Col lg={3} className={"post-card-breaker"}>
           {/* pfp */}
           <Row className="my-4">
             <Col style={{ justifyContent: "center", display: "flex" }}>
@@ -79,7 +79,7 @@ const PostCard = ({ profilePic, startDate, usersNeeded, usersJoined, attendees =
             </Col>
           </Row>
         </Col>
-          <Col lg={{ span: 4, offset: 1 }} className="my-4 d-flex flex-column gap-2">
+          <Col lg={{ span: 4, offset: 1 }} className="my-4 d-flex flex-column gap-3">
             {attendees.map((attendee) => (
               <UsernameAndPFPCard
                 key={attendee.user_id}

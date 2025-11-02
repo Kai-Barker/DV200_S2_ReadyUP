@@ -1,6 +1,7 @@
 import React from "react";
 import '../css/HeroSection.css';
 import { Link } from "react-router-dom";
+import OutlineButton from "./OutlineButton";
 
 function HeroSection() {
   return (
@@ -12,6 +13,9 @@ function HeroSection() {
         <button className="hero-button cursor-target">
           <span>Browse Posts</span>
         </button>
+        <div className="hero-button-mobile">
+          <OutlineButton buttonLink={"/categories"} buttonLabel={"Browse Posts"} />
+        </div>
         </Link>
       </div>
     </div>
