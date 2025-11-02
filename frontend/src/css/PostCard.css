@@ -13,12 +13,13 @@
   justify-content: center;
 }
 
-h2 {
+
+.post-card-text h2 {
   white-space: nowrap; /* force one line */
   overflow: hidden; /* hide overflow */
   text-overflow: ellipsis; /* ... if too long */
 }
-p{
+.post-card-text p{
   overflow: hidden; /* hide overflow */
   text-overflow: ellipsis; /* ... if too long */
 }
