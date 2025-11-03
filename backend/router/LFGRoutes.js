@@ -325,6 +325,19 @@ module.exports = function (db, cloudinary) {
       // return res.status(200).json({ message: "post created successfully", post: {} });
     });
   });
+  router.get("/posts/search/:post_title", authMiddleware, async (req,res) => {
+    const postTitle = req.params.post_title;
+    const sql = "SELECT * FROM `posts` WHERE posts.title LIKE ?";
+    db.query(sql, ['%'+postTitle+'%'], (err,result) => {
+      if (err) {
+        return res.status(500).json({message: "Error finding post"});
+      }
+      if (result.length == 0) {
+        return res.status(404).json({message: "Unable to find posts with that title"});
+      }
+      return res.status(200).json(result);
+    });
+  });
 
   router.post("/posts/join", authMiddleware, async (req, res) => {
     if (req.user.role != "user" && req.user.role != "admin") {
@@ -353,6 +366,71 @@ module.exports = function (db, cloudinary) {
           return res.status(500).json({ message: "Error creating post" });
         }
         return res.status(200).json({ message: "post created successfully" });
+      });
+    });
+  });
+  router.delete("/delete_category/:id", authMiddleware, (req, res) => {
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    const categoryID = req.params.id;
+    const checkPostsSql = `SELECT COUNT(*) AS postCount FROM posts WHERE category_id = ?`;
+    db.query(checkPostsSql, [categoryID], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error checking for posts." });
+      }
+
+      if (results[0].postCount > 0) {
+        //If posts exist, block the deletion. It should collapse all regardless, but better to not delete a category with posts in it
+        return res.status(400).json({
+          message: `Cannot delete category: ${results[0].postCount} posts are still associated with it.`,
+        });
+      }
+      const deleteSql = "DELETE FROM category WHERE category_id = ?";
+      db.query(deleteSql, [categoryID], (err, result) => {
+        if (err) {
+          console.error("Database error: ", err);
+          return res.status(500).json({ message: "Error deleting category." });
+        }
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: "Category not found." });
+        }
+        res.status(200).json({ message: "Category deleted successfully." });
+      });
+    });
+  });
+  router.delete("/delete_post/:id", authMiddleware, (req, res) => {
+    const postId = req.params.id;
+    const currentUserId = req.user.id;
+    const currentUserRole = req.user.role;
+
+    const getPostSql = "SELECT user_id FROM posts WHERE post_id = ?";
+    db.query(getPostSql, [postId], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error fetching post." });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Post not found." });
+      }
+      const postAuthorId = results[0].user_id;
+
+      // Check if the user is an Admin OR the post's original author
+      if (currentUserRole !== "admin" && currentUserId !== postAuthorId) {
+        return res.status(403).json({ message: "Access denied. You are not the author or an admin." });
+      }
+
+      const deletePostSql = "DELETE FROM posts WHERE post_id = ?";
+      db.query(deletePostSql, [postId], (err, result) => {
+        if (err) {
+          console.error("Database error: ", err);
+          return res.status(500).json({ message: "Error deleting post." });
+        }
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ message: "Post not found" });
+        }
+        res.status(200).json({ message: "Post deleted successfully." });
       });
     });
   });

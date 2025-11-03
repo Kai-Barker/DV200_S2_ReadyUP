@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import ReactGA from "react-ga4";
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -21,6 +22,12 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    if (password.length==0) {
+      setMessage("No Password Entered")
+    }
+    else if (cheatCode.length==0) {
+      setMessage("No Cheat Code Entered")
+    }
     try {
       const response = await api.post("/auth/login", {
         email,
@@ -33,10 +40,13 @@ const LoginForm = () => {
       ReactGA.event("logged_in_user");
       navigate("/");
       forceRefreshPage();
+      toast.success("Logged In Successfully");
     } catch (error) {
       console.error(error);
       ClearFields();
       setMessage("One or more fields are incorrect. Please try again");
+      toast.error("Failed to log in");
+      
     }
   };
   const [email, setEmail] = useState("");
@@ -48,6 +58,7 @@ const LoginForm = () => {
   const ClearFields = () => {
     setCheatCode("");
     setPassword("");
+    setCheatCodeDisplay("");
   }
   return (
     <Form onSubmit={handleSubmit}>

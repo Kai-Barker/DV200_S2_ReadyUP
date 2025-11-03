@@ -40,41 +40,122 @@ module.exports = function (db, cloudinary) {
       res.status(500).json({ message: "An error occurred during the image upload." });
     }
   });
-  router.post("/update_profile", authMiddleware, upload.single("pfp"), async (req, res) => {
-    console.log(req.body);
-    const userID = req.user.id;
-    const { bio, communication_method, username } = req.body;
+  router.post("/update_profile", authMiddleware, upload.single("pfp"), (req, res) => {
+  const userID = req.user.id;
+  const { bio, communication_method, username } = req.body;
 
-    if (!req.file || !bio || !communication_method || !username) {
-      return res.status(400).send("No file uploaded");
+  let sqlParts = [];
+  let sqlParams = [];
+
+  // build the query here so any individual one can be updated
+  if (bio) {
+    sqlParts.push("Bio = ?");
+    sqlParams.push(bio);
+  }
+  if (communication_method) {
+    sqlParts.push("communication_method = ?");
+    sqlParams.push(communication_method);
+  }
+  if (username) {
+    sqlParts.push("username = ?");
+    sqlParams.push(username);
+  }
+  const runFinalUpdate = (newImageUrl = null) => {
+    // Check if anything is actually being updated
+    if (sqlParts.length === 0) {
+      if (!newImageUrl) { // No new file and no new text
+        return res.status(200).json({ message: "No changes provided." });
+      }
+      // Only a new image was uploaded, but the SQL query is empty is handled in the req.file block
     }
-    try {
-      const base64image = Buffer.from(req.file.buffer).toString("base64");
-      let dataURI = "data:" + req.file.mimetype + ";base64," + base64image;
-      const result = await cloudinary.uploader.upload(dataURI, {
-        asset_folder: "profile_pictures",
-      });
-      const imageUrl = result.secure_url;
-      console.log("Image uploaded to Cloudinary: ", imageUrl);
-      const sql = "UPDATE users SET profile_picture = ?, Bio = ?, communication_method= ?, username = ? WHERE user_id = ?";
-      db.query(sql, [imageUrl, bio, communication_method, username, userID], (err, result) => {
-        if (err) {
-          console.error("Database error: ", err);
-          return res.status(500).json({ message: "Error uploading, delete this image: " + imageUrl });
+
+    sqlParams.push(userID); // Add user_id for the WHERE clause
+    const sql = `UPDATE users SET ${sqlParts.join(", ")} WHERE user_id = ?`;
+
+    db.query(sql, sqlParams, (err, result) => {
+      if (err) {
+        console.error("Database error: ", err);
+        let errMsg = "Error updating profile in database.";
+        if (newImageUrl) {
+          errMsg += ` Orphaned image at: ${newImageUrl}`;
         }
-        if (result.affectedRows === 0) {
-          return res.status(404).json({ message: "User not found." });
+        return res.status(500).json({ message: errMsg });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "User not found." });
+      }
+      
+      // Success
+      const response = { message: "Profile updated successfully!" };
+      if (newImageUrl) {
+        response.imageUrl = newImageUrl; // Send back the new URL
+      }
+      res.status(200).json(response);
+    });
+  };
+
+  
+  if (req.file) {
+    // If new file, get the old image URL to delete it and prevent storing too many images/unsued images
+    const getOldUrlSql = "SELECT profile_picture FROM users WHERE user_id = ?";
+    db.query(getOldUrlSql, [userID], (err, results) => {
+      if (err || results.length === 0) {
+        return res.status(500).json({ message: "Error fetching user for image update." });
+      }
+
+      const oldUrl = results[0].profile_picture;
+      let oldPublicId = null;
+
+      // Cloudinary only works with public ID's for deleting assets. I only store the URL. I need to in essence extract the id from the URL. Comes right at the end of the query before the filetype
+      if (oldUrl) {
+        try {
+          // This logic finds the part after ".../upload/v12345/" and removes the file extension
+          const urlParts = oldUrl.split('/upload/');
+          if (urlParts.length === 2) {
+            const versionAndId = urlParts[1].split('/');
+            versionAndId.shift(); // Removes the version number (e.g., 'v167888')
+            const idWithExtension = versionAndId.join('/');
+            oldPublicId = idWithExtension.substring(0, idWithExtension.lastIndexOf('.')); //Gets the part before the ' . '  e.g. getsthisbit.doesntgetthis
+          }
+        } catch (e) {
+          console.error("Could not parse old public_id:", e);
         }
-        res.status(200).json({
-          message: "Profile updated successfully!",
-          imageUrl: imageUrl,
-        });
-      });
-    } catch (error) {
-      console.log("Error during image upload:", error);
-      res.status(500).json({ message: "An error occurred during the image upload." });
-    }
-  });
+      }
+
+      // Delete from cloudinary and add new url
+      (async () => {
+        try {
+          //Delete if exists
+          if (oldPublicId) {
+            console.log(`Deleting old image: ${oldPublicId}`);
+            await cloudinary.uploader.destroy(oldPublicId);
+          }
+
+          //Upload
+          const base64image = Buffer.from(req.file.buffer).toString("base64");
+          let dataURI = "data:" + req.file.mimetype + ";base64," + base64image;
+          
+          const result = await cloudinary.uploader.upload(dataURI, {
+            asset_folder: "profile_pictures", // This sets the public_id
+          });
+
+          sqlParts.push("profile_picture = ?");
+          sqlParams.push(result.secure_url);
+
+          // Run the final update query
+          runFinalUpdate(result.secure_url);
+
+        } catch (error) {
+          console.log("Error during Cloudinary operations:", error);
+          res.status(500).json({ message: "An error occurred during the image upload." });
+        }
+      })();
+    });
+  } else {
+    // If no new file, just run the update for the text fields
+    runFinalUpdate();
+  }
+});
   router.get("/profile/:user_id", authMiddleware, (req, res) => {
     const userID = req.params.user_id;
     console.log(userID);
@@ -163,6 +244,29 @@ module.exports = function (db, cloudinary) {
 
   router.get("/friends", authMiddleware, (req, res) => {
     const userID = req.user.id;
+    //Gets the opposite side of the friendship
+    const sql = `SELECT users.user_id, users.profile_picture, users.username, friend.status 
+                  FROM users LEFT JOIN friend ON users.user_id = friend.user_id_two
+                  WHERE friend.user_id_one = ? AND friend.status = 'accepted'
+
+                  UNION
+
+                  SELECT users.user_id, users.profile_picture, users.username, friend.status 
+                  FROM users LEFT JOIN friend ON users.user_id = friend.user_id_one
+                  WHERE friend.user_id_two = ? AND friend.status = 'accepted'`;
+    db.query(sql, [userID, userID], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error fetching friends list" });
+      }
+      res.status(200).json({
+        data: results,
+        message: "Friends list fetched successfully.",
+      });
+    });
+  });
+  router.get("/friends/:id", authMiddleware, (req, res) => {
+    const userID = req.params.id;
     //Gets the opposite side of the friendship
     const sql = `SELECT users.user_id, users.profile_picture, users.username, friend.status 
                   FROM users LEFT JOIN friend ON users.user_id = friend.user_id_two

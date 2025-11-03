@@ -9,7 +9,7 @@ const CategoryAdmin = ({ image, title, onDelete }) => {
       <Container>
         <Row>
           <Col className="game-cat-card"style={{padding: "0"}}>
-            <img src={image} alt={title} style={{margin: "none"}}/>
+            <img src={image} alt={title} style={{ margin: "none", maxHeight: "50vh", height: "50vh", objectFit: "cover" }} />
             <h5 className="game-cat-card-title">{title}</h5>
             <OutlineButton buttonLabel={"Delete Category"} buttonFunction={onDelete}/>
           </Col>

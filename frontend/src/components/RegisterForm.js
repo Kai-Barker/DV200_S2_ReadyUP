@@ -7,18 +7,26 @@ import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import ReactGA from "react-ga4";
+import { toast } from 'react-toastify';
+
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const handleCheatInput = (direction) => {
     setCheatCode(cheatCode + direction);
-    setCheatCodeDisplay(cheatCodeDisplay+direction + " ")
+    setCheatCodeDisplay(cheatCodeDisplay + direction + " ");
     console.log(cheatCode);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password != confirmPassword) {
-      console.error("Passwords do not match");
+      setMessage("Passwords do not match");
+      return;
+    }
+    if (password.length == 0) {
+      setMessage("Please enter a password");
+    } else if (cheatCode.length == 0) {
+      setMessage("Please enter a Cheat Code");
       return;
     }
     try {
@@ -32,9 +40,11 @@ const LoginForm = () => {
       console.log("Registration successful");
       ReactGA.event("registered_user");
       navigate("/login");
+      toast.success("Successfully Registered User");
     } catch (error) {
       console.error(error);
       setMessage("Error Registering User");
+      toast.error("Failed to Register User")
       ClearFields();
     }
   };
@@ -46,12 +56,12 @@ const LoginForm = () => {
   const [cheatCodeDisplay, setCheatCodeDisplay] = useState("");
   const [message, setMessage] = useState("");
 
-
-   const ClearFields = () => {
+  const ClearFields = () => {
     setCheatCode("");
     setPassword("");
     setConfirmPassword("");
-  }
+    setCheatCodeDisplay("");
+  };
   return (
     <Form onSubmit={handleSubmit}>
       <div className="login-form-group">
@@ -84,25 +94,25 @@ const LoginForm = () => {
           />
         </Form.Group>
       </div>
-      <div className="my-4" style={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:'column'}}>
-          <h5>Enter your cheat code</h5>
-          <h6>(Think of it like a second password)</h6>
+      <div className="my-4" style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+        <h5>Enter your cheat code</h5>
+        <h6>(Think of it like a second password)</h6>
       </div>
       <div className="login-center-component-wrapper">
         <Form.Group className="mb-3" controlId="formBasicCheckbox">
           <CheatCode onInput={handleCheatInput} />
         </Form.Group>
       </div>
-      <div className="my-4" style={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:'column'}}>
-          <h6>{cheatCodeDisplay}</h6>
+      <div className="my-4" style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+        <h6>{cheatCodeDisplay}</h6>
       </div>
-      <h5 style={{marginTop:'2vh', color:'red'}}>{message}</h5>
+      <h5 style={{ marginTop: "2vh", color: "red" }}>{message}</h5>
       <div className="login-center-component-wrapper" style={{ marginTop: "3vh" }}>
         <Button className="cursor-target login-submit-button" type="submit">
           LETS GO
         </Button>
       </div>
-      <h3 style={{textAlign:"center", marginBottom:"5vh"}}>Already Have A ReadyUP Account?</h3>
+      <h3 style={{ textAlign: "center", marginBottom: "5vh" }}>Already Have A ReadyUP Account?</h3>
       <div style={{ marginBottom: "5vh" }}>
         <OutlineButton buttonLink={"/Login"} buttonLabel={"Login"} />
       </div>
