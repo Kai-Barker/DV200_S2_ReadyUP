@@ -3,7 +3,7 @@ import "../css/UserProfile.css";
 import userPFP from "../assets/images/towelahri.jpg";
 import OutlineButton from "../components/OutlineButtonLGFunction";
 import Tabs from "../components/Tabs";
-import { Discord, Steam } from "react-bootstrap-icons";
+import { Discord, Steam, Xbox, Playstation, NintendoSwitch } from "react-bootstrap-icons";
 import api from "../api";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -19,8 +19,14 @@ import useAuth from "../customHooks/auth";
 import ReactGA from "react-ga4";
 import {toast} from 'react-toastify';
 import useSeoPageInfo from "../customHooks/useSeoPageInfo";
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import UsernameAndPFPCard from "../components/UsernameAndPFPCard";
 
-const availablePlatforms = ["Discord", "Steam", "Xbox", "Playstation"];
+
+const availablePlatforms = ["Discord", "Steam", "Xbox", "Playstation", "Nintendo"];
 
 const dummyUser = {
   profilePic: userPFP,
@@ -30,24 +36,14 @@ const dummyUser = {
   platforms: ["Discord", "Steam"],
 };
 
-let tabsData = [
-  {
-    heading: "Summary",
-    value: dummyUser.userBio,
-  },
-  {
-    heading: "Friends",
-    value: dummyUser.friends,
-  },
-];
 
 const UserProfile = () => {
   const [open, setOpen] = useState(false);
   const { userId } = useParams();
   const { user } = useAuth();
+  
 
-
-
+  
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -64,8 +60,38 @@ const UserProfile = () => {
   const [communicationMethodPlatform, setCommunicationMethodPlatform] = useState("");
   const [communicationMethodLink, setCommunicationMethodLink] = useState("");
   const [readableCommunicationMethods, setReadableCommunicationMethods] = useState([{}]);
-
-
+  const [friendsData, setFriendsData] = useState([]);
+  
+  const FriendPanel = (
+      <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+        <List>
+          {friendsData?.length > 0 ?(friendsData?.map((attendee) => (
+            <ListItem key={attendee.user_id} disablePadding>
+              <ListItemButton>
+                <UsernameAndPFPCard
+                  username={attendee.username}
+                  profilePicture={attendee.profile_picture}
+                  userID={attendee.user_id}
+                  isRemove={false}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))) : "No Friends added yet"}
+        </List>
+      </Box>
+    );
+  
+  const tabsData = [
+    {
+      heading: "Summary",
+      value: profileData?.Bio || "No bio available.",
+    },
+    {
+      heading: "Friends",
+      value: FriendPanel || "",
+    },
+  ];
+  
   const AddFriend = async () => {
     if (isOwner) {
       return;
@@ -103,6 +129,42 @@ const UserProfile = () => {
         return (
           <Tooltip title={tooltipTitle} placement="top" arrow>
             <Steam
+              className="cursor-target"
+              onClick={() => {
+                handleCopy(link);
+              }}
+              style={{ marginRight: "3vw", fontSize: "10vh", color: "#73EEDC" }}
+            />
+          </Tooltip>
+        );
+        case "Xbox":
+        return (
+          <Tooltip title={tooltipTitle} placement="top" arrow>
+            <Xbox
+              className="cursor-target"
+              onClick={() => {
+                handleCopy(link);
+              }}
+              style={{ marginRight: "3vw", fontSize: "10vh", color: "#73EEDC" }}
+            />
+          </Tooltip>
+        );
+        case "Playstation":
+        return (
+          <Tooltip title={tooltipTitle} placement="top" arrow>
+            <Playstation
+              className="cursor-target"
+              onClick={() => {
+                handleCopy(link);
+              }}
+              style={{ marginRight: "3vw", fontSize: "10vh", color: "#73EEDC" }}
+            />
+          </Tooltip>
+        );
+        case "Nintendo":
+        return (
+          <Tooltip title={tooltipTitle} placement="top" arrow>
+            <NintendoSwitch
               className="cursor-target"
               onClick={() => {
                 handleCopy(link);
@@ -157,9 +219,20 @@ const UserProfile = () => {
   useEffect(() => {
     console.log(editCommunicationMethods);
   }, [editCommunicationMethods]);
-
+  const FetchFriends = async () => {
+    try {
+      const response = await api.get(`user/friends/${profileData.user_id}`);
+      setFriendsData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching friends:", error);
+    }
+  };
   useEffect(() => {
-    console.log(profileData);
+    console.log(friendsData);
+  }, [friendsData])
+  useEffect(() => {
+    console.log(profileData?.username);
+    console.log(profileData?.user_id);
     if (profileData) {
       const tempComMethod = profileData?.communication_method?.split(",");
       let tempComArr = [];
@@ -173,8 +246,6 @@ const UserProfile = () => {
 
       setReadableCommunicationMethods(tempComArr);
     }
-    tabsData[0].value = profileData?.Bio || "No bio available.";
-    tabsData[1].value = "No friends added yet";
     if (!profileData) {
       return;
     }
@@ -182,12 +253,13 @@ const UserProfile = () => {
     setEditBio(profileData.Bio);
     setEditProfilePicture(profileData.profile_picture);
     setEditCommunicationMethods(profileData.communication_method);
+    FetchFriends();
   }, [profileData]);
   const handleSubmit = async () => {
-    if (!editBio || !editUsername || !editProfilePicture) {
-      console.log("Fill In All Fields");
-      return;
-    }
+    // if (!editBio || !editUsername || !editProfilePicture) {
+    //   console.log("Fill In All Fields");
+    //   return;
+    // }
     const formData = new FormData();
 
     formData.append("pfp", editProfilePicture);
