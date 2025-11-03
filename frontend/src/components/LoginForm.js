@@ -13,8 +13,9 @@ const LoginForm = () => {
   const forceRefreshPage = () => {
     window.location.reload();
   };
-  const handleCheatInput = (direction) => {
+   const handleCheatInput = (direction) => {
     setCheatCode(cheatCode + direction);
+    setCheatCodeDisplay(cheatCodeDisplay+direction + " ")
     console.log(cheatCode);
   };
   const handleSubmit = async (e) => {
@@ -42,6 +43,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [cheatCode, setCheatCode] = useState("");
   const [message, setMessage] = useState("");
+  const [cheatCodeDisplay, setCheatCodeDisplay] = useState("");
 
   const ClearFields = () => {
     setCheatCode("");
@@ -61,11 +63,17 @@ const LoginForm = () => {
           <Form.Control className="cursor-target login-form-field" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         </Form.Group>
       </div>
+      <div className="my-4" style={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:'column'}}>
+          <h5>Enter your cheat code</h5>
+          <h6>(Think of it like a second password)</h6>
+      </div>
       <div className="login-center-component-wrapper">
         <Form.Group className="mb-3" controlId="formBasicCheckbox">
-          <h5>Enter Your Cheat Code</h5>
           <CheatCode onInput={handleCheatInput} />
         </Form.Group>
+      </div>
+      <div className="my-4" style={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:'column'}}>
+          <h6>{cheatCodeDisplay}</h6>
       </div>
       <h5 style={{marginTop:'2vh', color:'red'}}>{message}</h5>
       <div className="login-center-component-wrapper" style={{ marginTop: "3vh" }}>

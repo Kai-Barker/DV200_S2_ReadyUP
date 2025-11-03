@@ -12,6 +12,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const handleCheatInput = (direction) => {
     setCheatCode(cheatCode + direction);
+    setCheatCodeDisplay(cheatCodeDisplay+direction + " ")
     console.log(cheatCode);
   };
   const handleSubmit = async (e) => {
@@ -42,6 +43,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [cheatCode, setCheatCode] = useState("");
+  const [cheatCodeDisplay, setCheatCodeDisplay] = useState("");
   const [message, setMessage] = useState("");
 
 
@@ -82,11 +84,17 @@ const LoginForm = () => {
           />
         </Form.Group>
       </div>
+      <div className="my-4" style={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:'column'}}>
+          <h5>Enter your cheat code</h5>
+          <h6>(Think of it like a second password)</h6>
+      </div>
       <div className="login-center-component-wrapper">
         <Form.Group className="mb-3" controlId="formBasicCheckbox">
-          <h5>Enter Your Cheat Code</h5>
           <CheatCode onInput={handleCheatInput} />
         </Form.Group>
+      </div>
+      <div className="my-4" style={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:'column'}}>
+          <h6>{cheatCodeDisplay}</h6>
       </div>
       <h5 style={{marginTop:'2vh', color:'red'}}>{message}</h5>
       <div className="login-center-component-wrapper" style={{ marginTop: "3vh" }}>
@@ -94,7 +102,7 @@ const LoginForm = () => {
           LETS GO
         </Button>
       </div>
-      <h3>Already Have A ReadyUP Account?</h3>
+      <h3 style={{textAlign:"center", marginBottom:"5vh"}}>Already Have A ReadyUP Account?</h3>
       <div style={{ marginBottom: "5vh" }}>
         <OutlineButton buttonLink={"/Login"} buttonLabel={"Login"} />
       </div>

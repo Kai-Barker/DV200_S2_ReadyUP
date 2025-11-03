@@ -20,6 +20,14 @@
   justify-content: center;
   gap: 5vh;
 }
+.login-form-bg{
+  max-width: 40vw;
+  background-color: rgba(237, 228, 241, 0.2);
+  padding-top: 2vw;
+  border-radius: 40px;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
 .login-submit-button{
     height: auto;
     width: auto;
@@ -59,4 +67,10 @@
 
 .login-form-group{
     margin-bottom: 5vh;
+}
+
+@media (max-width: 991.98px) {
+  .login-form-bg{
+  max-width: 90vw;
+}
 }

@@ -4,7 +4,7 @@ import SortByDropdown from "../components/SortByDropdown";
 import SearchBar from "../components/SearchBar";
 import TagFilterer from "../components/TagFilterer";
 import PostCard from "../components/PostCard";
-import profilePic from "../assets/images/towelahri.jpg";
+import profilePic from "../assets/images/BasePFP.png";
 import PaginationControls from "../components/PaginationControls";
 import { useState, useEffect } from "react";
 import PostCardWithAttendees from "../components/PostCardWithAttendees";
