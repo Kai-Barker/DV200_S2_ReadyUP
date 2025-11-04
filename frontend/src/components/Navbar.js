@@ -74,7 +74,7 @@ const AppNavbar = ({ onOpenFriendsList }) => {
 
             {/* Icons */}
             <Col lg={{ span: 4, offset: 1 }} className="d-flex justify-content-end align-items-center gap-4">
-              <NavLink className="nav-links cursor-target" to="https://github.com/Kai-Barker/DV200_S2_ReadyUP.git">
+              <NavLink className="nav-links cursor-target" to="https://github.com/Kai-Barker/DV200_S2_ReadyUP/tree/main/documentation/faq/README.md">
                 Help
               </NavLink>
               {isLoggedIn ? <OutlineButtonFunction buttonLabel={"Logout"} buttonFunction={handleLogout} /> : null}
