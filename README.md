@@ -148,7 +148,7 @@ CLOUDINARY_URL=cloudinary://your_api_key:your_api_secret@your_cloud_name
 - - Protected routes that can only be accessed by administrators
 - - Admins can delete any category or post on the platform
 - - Admins can easily add any categories for users to post on
-- **SEO**: Client-side SEO is handled with a custom useSeo hook to update page titles and descriptions. A sitemap is further used to aid Google's crawlers with key categories.
+- **SEO**: Client-side SEO is handled with a custom useSeo hook to add dynamic page titles and meta tags. A sitemap is further used to aid Google's crawlers with key categories.
 - **Responsiveness**: The web app is 100% mobile responsive using bootstraps layout tools and custom media queries
 
 ### Screenshots & Explanations
