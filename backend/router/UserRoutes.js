@@ -261,6 +261,23 @@ module.exports = function (db, cloudinary) {
       }
       res.status(200).json({
         data: results,
+        message: "Friends list fetched successfy.",
+      });
+    });
+  });
+  router.get("/friends/requests", authMiddleware, (req, res) => {
+    const userID = req.user.id;
+    //Gets the opposite side of the friendship
+    const sql = `SELECT users.user_id, users.profile_picture, users.username, friend.status 
+    FROM users LEFT JOIN friend ON users.user_id = friend.user_id_one
+    WHERE friend.user_id_two = ? AND friend.status = 'pending'`;
+    db.query(sql, [userID], (err, results) => {
+      if (err) {
+        console.error("Database error: ", err);
+        return res.status(500).json({ message: "Error fetching friends list" });
+      }
+      res.status(200).json({
+        data: results,
         message: "Friends list fetched successfully.",
       });
     });
@@ -284,24 +301,7 @@ module.exports = function (db, cloudinary) {
       }
       res.status(200).json({
         data: results,
-        message: "Friends list fetched successfully.",
-      });
-    });
-  });
-  router.get("/friends/requests", authMiddleware, (req, res) => {
-    const userID = req.user.id;
-    //Gets the opposite side of the friendship
-    const sql = `SELECT users.user_id, users.profile_picture, users.username, friend.status 
-    FROM users LEFT JOIN friend ON users.user_id = friend.user_id_one
-    WHERE friend.user_id_two = ? AND friend.status = 'pending'`;
-    db.query(sql, [userID], (err, results) => {
-      if (err) {
-        console.error("Database error: ", err);
-        return res.status(500).json({ message: "Error fetching friends list" });
-      }
-      res.status(200).json({
-        data: results,
-        message: "Friends list fetched successfully.",
+        message: "Friends list fetched succely.",
       });
     });
   });

@@ -42,6 +42,11 @@ export default function FriendsList({ open, onClose }) {
   const debouncedSearchTerm = useDebounce(searchTerm, 1000);
   const [friends, setFriends] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
+
+  useEffect(() =>{
+    console.log(friendRequests);
+    
+  }, [friendRequests])
   const RemoveFriend = async (userID) => {
     console.log(`Removing friend ${userID}`);
     if (!userID) {
@@ -95,9 +100,10 @@ export default function FriendsList({ open, onClose }) {
     try {
       const response = await api.get("user/friends");
       setFriends(response.data.data);
-      console.log(response.data.data);
+      console.log(response);
       const requestsResponse = await api.get("user/friends/requests");
-      console.log(requestsResponse.data.data);
+      console.log("Fetching friend requests");
+      console.log(requestsResponse);
       setFriendRequests(requestsResponse.data.data);
     } catch (error) {
       console.error("Error fetching friends:", error);
