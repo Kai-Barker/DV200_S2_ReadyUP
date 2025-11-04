@@ -232,7 +232,7 @@ Public profile
 
 #### System Diagrams
 
-![System Architecture Diagram](./documentation_assets//ReadyUP%20ER%20Diagram.drawio.png)
+![System Architecture Diagram](./documentation/documentation_assets//ReadyUP%20ER%20Diagram.drawio.png)
 
 ---
 
