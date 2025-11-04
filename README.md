@@ -156,58 +156,58 @@ CLOUDINARY_URL=cloudinary://your_api_key:your_api_secret@your_cloud_name
 **Register Page**
 
 - The register page is where users create an account, with a username, email, password, and a MFA Cheat code password
-![](./documentation_assets/Register.png)
-![](./documentation_assets/Register2.png)
+![](./documentation/documentation_assets/Register.png)
+![](./documentation/documentation_assets/Register2.png)
 
 **Login Page**
 
 - Very similar to the register page, users sign into their account here
-![](./documentation_assets/Login.png)
+![](./documentation/documentation_assets/Login.png)
 
 **Home Page**
 
 - Introduces the user to the site and shows the top categories
 
-![](./documentation_assets/HomePage.png)
-![](./documentation_assets/HomePage2.png)
+![](./documentation/documentation_assets/HomePage.png)
+![](./documentation/documentation_assets/HomePage2.png)
 
 **Categories Page**
 
 - Shows a list of available categories with filter options. Pagination included
 
-![](./documentation_assets/Categories.png)
+![](./documentation/documentation_assets/Categories.png)
 
 **Browse Posts Page**
 
 - Shows a list of posts within a category. Signed in users can create and join these posts as well
 
-![](./documentation_assets/Browse%20Posts.png)
-![](./documentation_assets/CreatePost.png)
-![](./documentation_assets/ViewPost.png)
+![](./documentation/documentation_assets/Browse%20Posts.png)
+![](./documentation/documentation_assets/CreatePost.png)
+![](./documentation/documentation_assets/ViewPost.png)
 
 **My Posts**
 
 - Shows the user a list of all posts they have joined or created
 
-![](./documentation_assets/MyPosts.png)
+![](./documentation/documentation_assets/MyPosts.png)
 
 **User Profile**
 
 - Shows information related to the user, can be loaded with own profile or a public profile
 
-![](./documentation_assets/UserProfile.png)
-![](./documentation_assets/EditProfile.png)
+![](./documentation/documentation_assets/UserProfile.png)
+![](./documentation/documentation_assets/EditProfile.png)
 
 Public profile
 
-![](./documentation_assets/PublicProfile.png)
+![](./documentation/documentation_assets/PublicProfile.png)
 
 
 **Friends List**
 - Shows the user's friends
 
-![](./documentation_assets/FriendsList.png)
-![](./documentation_assets/FriendsReq.png)
+![](./documentation/documentation_assets/FriendsList.png)
+![](./documentation/documentation_assets/FriendsReq.png)
 ---
 
 ## 4. Demonstration Video
