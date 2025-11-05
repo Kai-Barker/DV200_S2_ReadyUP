@@ -90,15 +90,22 @@ module.exports = function (db, cloudinary) {
       return res.status(200).json(results);
     });
   });
+
+  //This query is in charge of retrieving information related to posts
+  //It also has been upgraded to handle searching, sorting, and pagination. Pure pain to code, but it is beautiful
   router.get("/:title/posts", (req, res) => {
+    //Fetch info
     const categoryTitle = req.params.title;
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 4; // Your frontend uses 4
+    const limit = parseInt(req.query.limit) || 4;
     const search = req.query.search || "";
     const sort = req.query.sort || "start_time_desc";
     const tags = req.query.tags ? req.query.tags.split(",") : [];
     const offset = (page - 1) * limit;
+    //dataSql gives me the data for my posts, countSql gives me info for pagination.
 
+    //I get and join everything pretty normally, however, tags are special. I needed to add a concatenation for the tags
+    // So it can be read on my frontend and attached to each post
     let dataSql = `SELECT DISTINCT
           posts.*, 
           users.profile_picture, 
@@ -117,16 +124,17 @@ module.exports = function (db, cloudinary) {
         LEFT JOIN post_tags ON post_tags.post_id = posts.post_id
         LEFT JOIN tags ON tags.tag_id = post_tags.tag_id
       `;
-
+    //The next bunch of lines build up the query for the posts
     let whereClause = ` WHERE category.title = ? AND posts.num_joined != posts.max_players`;
     let queryParams = [categoryTitle];
     let countParams = [categoryTitle];
-
+    //Filter search
     if (search) {
       whereClause += ` AND posts.title LIKE ?`;
       queryParams.push(`%${search}%`);
       countParams.push(`%${search}%`);
     }
+    //Filter tags
     if (tags.length > 0) {
       whereClause += ` AND posts.post_id IN (
           SELECT post_id FROM post_tags
@@ -150,14 +158,13 @@ module.exports = function (db, cloudinary) {
       case "needs_players_desc":
         dataSql += ` ORDER BY (posts.max_players - posts.num_joined) DESC`;
         break;
-      default: // "start_time_desc"
+      default: // start_time_desc
         dataSql += ` ORDER BY posts.start_time DESC`;
     }
+    // Limit and offset for pagination
     dataSql += ` LIMIT ? OFFSET ?`;
     queryParams.push(limit, offset);
-
-    // const sql =
-    //   "SELECT posts.*, users.profile_picture, users.user_id, GROUP_CONCAT(tags.tag_name SEPARATOR ',') AS tags FROM posts LEFT JOIN category ON category.category_id = posts.category_id LEFT JOIN users ON posts.user_id = users.user_id LEFT JOIN post_tags ON post_tags.post_id = posts.post_id LEFT JOIN tags ON tags.tag_id = post_tags.tag_id WHERE category.title = ? AND posts.num_joined != posts.max_players GROUP BY posts.post_id";
+    //Run the built up query
     db.query(countSql, countParams, (countErr, countResult) => {
       if (countErr) {
         console.error("Error fetching post count: ", countErr);
