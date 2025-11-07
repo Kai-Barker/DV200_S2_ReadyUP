@@ -33,6 +33,26 @@
     <loc>https://readyuplfg.co.za/browse-posts/League%20of%20Legends</loc>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/Minecraft</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/https://readyuplfg.co.za/browse-posts/Monster%20Hunter%20Wilds</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/https://readyuplfg.co.za/browse-posts/Battlefield%206</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/https://readyuplfg.co.za/browse-posts/Overwatch%202</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://readyuplfg.co.za/browse-posts/Apex%20Legends</loc>
+    <priority>0.7</priority>
+  </url>
   
 
 </urlset>

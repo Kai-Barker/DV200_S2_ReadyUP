@@ -1,3 +1,11 @@
-# https://www.robotstxt.org/robotstxt.html
+# Allow all crawlers to access the site
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow crawlers from these specific pages
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+
+# Tell crawlers where your sitemap is
+Sitemap: https://readyuplfg.co.za/sitemap.xml
