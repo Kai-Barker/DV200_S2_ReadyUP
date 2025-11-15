@@ -1,5 +1,8 @@
 #  Kai Barker – ReadyUP
 
+<img width="1280" height="480" alt="ReadyUpBanner" src="https://github.com/user-attachments/assets/82706b61-15d7-4eea-a32d-a6493c39a973" />
+
+
 ##  Table of Contents
 
 1. [About the Project](#1-about-the-project)
